@@ -1,3 +1,4 @@
+## Misc
 ###### Version
 Bumped version to 4.6
 
@@ -11,3 +12,14 @@ Bumped version to 4.6
 ./gradlew --stop
 ```
 
+## Chapter 02
+
+#### helloworld-task-doLast
+```
+./gradlew helloWorld -p chapter02/helloworld-task-doLast
+```
+
+#### helloworld-task-left-shift
+```
+./gradlew helloWorld -p chapter02/helloworld-task-left-shift
+```

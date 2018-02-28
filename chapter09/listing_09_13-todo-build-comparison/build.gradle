@@ -16,10 +16,10 @@ task wrapper(type: Wrapper) {
 compareGradleBuilds {
     sourceBuild {
         projectDir = rootProject.projectDir
-        gradleVersion = '1.6'
+        gradleVersion = '4.5.1'
     }
     targetBuild {
         projectDir = sourceBuild.projectDir
-        gradleVersion = '1.7'
+        gradleVersion = '4.6'
     }
 }

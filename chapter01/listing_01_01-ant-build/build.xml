@@ -12,7 +12,7 @@
 
     <target name="compile" depends="init" description="compile the source">
         <!-- Compile the java code from ${src} into ${build} -->
-        <javac srcdir="${src}" destdir="${build}" classpath="lib/commons-lang3-3.1.jar" includeantruntime="false"/>
+        <javac srcdir="${src}" destdir="${build}" classpath="lib/commons-lang3-3.7.jar" includeantruntime="false"/>
     </target>
 
     <target name="dist" depends="compile" description="generate the distribution">

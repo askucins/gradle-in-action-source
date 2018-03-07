@@ -22,6 +22,10 @@ or
 java -cp lib/*:dist/* com.mycompany.app.Main
 ```
 
+#### mvn-build
+```
+java -cp target/my-app-1.0.jar:/home/askuci/.m2/repository/org/apache/commons/commons-lang3/3.7/commons-lang3-3.7.jar com.mycompany.app.Main 
+```
 ## Chapter 02
 
 #### helloworld-task-doLast

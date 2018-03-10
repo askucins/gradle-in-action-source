@@ -1,3 +1,22 @@
+/*
+This 'left shit' construction will be soon made deprecated and removed, e.g.
+
+askuci@lelek:~/work/src/gradle-in-action-source (bump-version=)$ ./gradlew -p chapter02/helloworld-task-left-shift/ helloWorld --warning-mode=all
+
+> Configure project :
+The Task.leftShift(Closure) method has been deprecated and is scheduled to be removed in Gradle 5.0. Please use Task.doLast(Action) instead.
+        at build_1noaagxs7hgh1vk3yfdrlwbyp.run(/home/askuci/work/src/gradle-in-action-source/chapter02/helloworld-task-left-shift/build.gradle:1)
+        (Run with --stacktrace to get the full stack trace of this deprecation warning.)
+
+> Task :helloWorld
+Hello World
+
+
+BUILD SUCCESSFUL in 0s
+1 actionable task: 1 executed
+
+ */
+
 task helloWorld << {
     println "Hello World"
 }

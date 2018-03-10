@@ -1,3 +1,4 @@
+//noinspection GroovyAssignabilityCheck
 task helloWorld {
     doLast {
         println "Hello World"

@@ -1,6 +1,15 @@
 //noinspection GroovyAssignabilityCheck
 task helloWorld {
     doLast {
-        println "Hello World"
+        println "Hello World1 - 3. executed"
+    }
+    doLast {
+        println "Hello World2 - 4. executed"
+    }
+    doFirst {
+        println "Hello World3 - 2. executed"
+    }
+    doFirst {
+        println "Hello World4 - 1. executed"
     }
 }

@@ -62,6 +62,12 @@ Hello World
 BUILD SUCCESSFUL in 0s
 1 actionable task: 1 executed
 ```
+###### More doFirst and doLast defined
+If there are more ```doFirst``` and ```doLast``` defined the order in which they are executed is different:
+* ```doLast``` are executed in the same order as they were defined
+* ```doFirst``` are execute in the opposite order as they were defined
+
+which really makes sense :)
 
 #### helloworld-task-left-shift
 ```bash
@@ -87,3 +93,5 @@ Hello World
 BUILD SUCCESSFUL in 0s
 1 actionable task: 1 executed
 ```
+
+#### dynamic-task-and-task-dependencies

@@ -1,17 +1,49 @@
-task startSession << {
-    chant()
+//noinspection GroovyAssignabilityCheck
+task startSession {
+    doLast {
+        chant()
+    }
 }
 
 def chant() {
     ant.echo 'Repeat after me...'
 }
 
-3.times {
-    task "yayGradle$it" << {
-        println 'Gradle rocks'
+4.times {
+    //noinspection GroovyAssignabilityCheck
+    task "yayGradle$it" {
+        doLast {
+            println 'Gradle rocks'
+        }
     }
 }
 
 yayGradle0.dependsOn startSession
+
+// test of exclusions (gw gT -x yG0)
+yayGradle1.dependsOn startSession
+
+
+// What about different order?
 yayGradle2.dependsOn yayGradle1, yayGradle0
-task groupTherapy(dependsOn: yayGradle2)
+// vs.
+//yayGradle2.dependsOn yayGradle0, yayGradle1
+// the result is the same.
+
+//noinspection GroovyAssignabilityCheck
+task groupTherapy(dependsOn: yayGradle2) {
+    doLast { println "All together!" }
+}
+
+// but that is almost a perfect definition of a task (no body/actions defined)
+// task groupTherapy(dependsOn: yayGradle2)
+
+
+// another crowd
+
+yayGradle3.dependsOn startSession
+
+//noinspection GroovyAssignabilityCheck
+task anotherCrowd (dependsOn: yayGradle3) {
+    doLast {println "Another crowd!"}
+}

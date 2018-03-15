@@ -1,3 +1,8 @@
+## Useful links
+* [Gradle Project](https://docs.gradle.org/4.6/dsl/org.gradle.api.Project.html)
+* [Gradle javadoc](https://docs.gradle.org/current/javadoc/index.html)
+* [CLI](https://docs.gradle.org/4.6/userguide/command_line_interface.html)
+
 ## Misc
 ###### Version
 Bumped gradle version to 4.6

@@ -24,10 +24,20 @@ class ToDoItemSpec extends Specification {
         tdi1                  | tdi2                  || outcome
         [id: 1]               | [id: 1]               || true
         [id: 1]               | [id: 2]               || false
+        [id: 1]               | [id: 10]              || false
         [id: 1, name: 'xyz1'] | [id: 1, name: 'xyz1'] || true
         [id: 1, name: 'xyz1'] | [id: 1, name: 'xyz2'] || false
         [id: 1, name: 'xyz1'] | [id: 2, name: 'xyz1'] || false
         [name: 'xyz1']        | [name: 'xyz1']        || true
         [name: 'xyz1']        | [name: 'xyz2']        || false
+    }
+
+    def "should sort TDI items" () {
+        when:
+        ToDoItem tdi1 = new ToDoItem(id:0L, name:'test 0')
+        ToDoItem tdi2 = new ToDoItem(id:10L, name:'test 10')
+        List<ToDoItem> items = [tdi1, tdi2]
+        then:
+        items.sort().collect{it.id} == [tdi1.id, tdi2.id]
     }
 }

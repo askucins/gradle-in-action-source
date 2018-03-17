@@ -102,9 +102,13 @@ BUILD SUCCESSFUL in 0s
 ## Chapter 03
 
 #### todo-app and todo-app--groovy
-To run this app:
+* To run this app:
 ```bash
 java -cp build/libs/* com.manning.gia.todo.ToDoApp
 ```
 * Easy way to add 'equals' and 'hash' method in groovy
 [EqualsAndHashCode](http://docs.groovy-lang.org/latest/html/api/groovy/transform/EqualsAndHashCode.html)
+* To run a single test method:
+```bash
+gw clean test --tests com.manning.gia.todo.model.ToDoItemSpec."should <completed> affects compare result"
+```

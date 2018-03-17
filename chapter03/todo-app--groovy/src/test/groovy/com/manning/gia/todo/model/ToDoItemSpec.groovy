@@ -14,7 +14,7 @@ class ToDoItemSpec extends Specification {
         !tdi.completed
     }
 
-    def "should order items by id"() {
+    def "should order items by <id>"() {
         given:
         ToDoItem tdi1 = new ToDoItem(id: 1)
         ToDoItem tdi2 = new ToDoItem(id: 2)
@@ -25,7 +25,7 @@ class ToDoItemSpec extends Specification {
         items == [tdi1, tdi2]
     }
 
-    def "should order items by name if ids are equal"() {
+    def "should order items by <name> if <id>s are equal"() {
         given:
         ToDoItem tdi1 = new ToDoItem(id: 0, name: 'Item 1')
         ToDoItem tdi2 = new ToDoItem(id: 0, name: 'Item 2')
@@ -34,5 +34,13 @@ class ToDoItemSpec extends Specification {
         items.sort()
         then:
         items == [tdi1, tdi2]
+    }
+
+    def "should <completed> affects compare result"() {
+        when:
+        ToDoItem tdi1 = new ToDoItem(completed: true)
+        ToDoItem tdi2 = new ToDoItem(completed: false)
+        then:
+        tdi1 != tdi2
     }
 }

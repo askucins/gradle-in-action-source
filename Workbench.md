@@ -4,15 +4,12 @@
 * [CLI](https://docs.gradle.org/4.6/userguide/command_line_interface.html)
 
 ## Misc
-###### Version
-Bumped gradle version to 4.6
-
-###### To run a task in a specific sub-project
+* Bumped gradle version to 4.6
+* To run a task in a specific sub-project
 ```bash
 ./gradlew helloWorld -p chapter02/helloworld-task-doLast
 ```
-
-###### To stop daemon
+* To stop daemon
 ```bash
 ./gradlew --stop
 ```
@@ -103,3 +100,11 @@ BUILD SUCCESSFUL in 0s
 (...)
 
 ## Chapter 03
+
+#### todo-app and todo-app--groovy
+To run this app:
+```bash
+java -cp build/libs/* com.manning.gia.todo.ToDoApp
+```
+* Easy way to add 'equals' and 'hash' method in groovy
+[EqualsAndHashCode](http://docs.groovy-lang.org/latest/html/api/groovy/transform/EqualsAndHashCode.html)

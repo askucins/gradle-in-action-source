@@ -110,5 +110,29 @@ java -cp build/libs/* com.manning.gia.todo.ToDoApp
 [EqualsAndHashCode](http://docs.groovy-lang.org/latest/html/api/groovy/transform/EqualsAndHashCode.html)
 * To run a single test method:
 ```bash
-gw clean test --tests com.manning.gia.todo.model.ToDoItemSpec."should <completed> affects compare result"
+gw clean test --tests com.manning.gia.todo.model.ToDoItemSpec."should create new item"
 ```
+* About 'equals' vs 'compareTo' (or '<=>')
+
+An excerpt from "Spock: Up and Running", by Rob Fletcher, O'Reilly Media, 2017
+> What Is == Really Doing?
+>
+> Although it’s typical (and usually safe) to consider == an alias for the Java-style equals
+> method, that’s something of an oversimplification.
+> Even though we can think of
+>
+>     assert a == b
+>
+> as the Groovy equivalent to the Java
+>
+>     assert a.equals(b);
+>
+> in fact, if the class of a implements Comparable , Groovy will use:
+>
+>     a.compareTo(b) == 0;
+>
+> The primary reason this is done is so that the == operator can be reflexive between
+> java.lang.String and groovy.lang.GString (the class that backs Groovy’s interpolated strings). 
+> Because java.lang.String is final , Groovy cannot extend it. Subsequent versions of Java have introduced 
+> the CharSequence class to work around this kind of problem in alternative JVM languages, 
+> but Groovy’s implementation predates this.

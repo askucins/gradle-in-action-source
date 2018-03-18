@@ -17,25 +17,38 @@ class ToDoItemSpec extends Specification {
     }
 
     @Unroll
-    def "should compare TDI items (#tdi1, #tdi2)"() {
+    def "should compare items (#_tdi1, #_tdi2)"() {
         expect:
-        (new ToDoItem(tdi1) == new ToDoItem(tdi2)) == outcome
+        (tdi1 <=> tdi2) == bySpaceShip
+        and:
+        (tdi1.compareTo(tdi2)) == byCTmethod
+        and:
+        (tdi1 == tdi2) == byOperator // relies on compareTo (class implements Comparable)
+        and:
+        (tdi1.equals(tdi2)) == byEquals
+
         where:
-        tdi1                  | tdi2                  || outcome
-        [id: 1]               | [id: 1]               || true
-        [id: 1]               | [id: 2]               || false
-        [id: 1]               | [id: 10]              || false
-        [id: 1, name: 'xyz1'] | [id: 1, name: 'xyz1'] || true
-        [id: 1, name: 'xyz1'] | [id: 2, name: 'xyz1'] || false
-        [id: 1, name: 'xyz1'] | [id: 1, name: 'xyz2'] || true // name is not used in compareTo !!
+        _tdi1                 | _tdi2                 || bySpaceShip | byCTmethod | byOperator | byEquals
+        [id: 1]               | [id: 1]               || 0           | 0          | true       | true
+        [id: 1]               | [id: 2]               || -1          | -1         | false      | false
+        [id: 1]               | [id: 10]              || -1          | -1         | false      | false
+        [id: 1, name: 'xyz1'] | [id: 1, name: 'xyz1'] || 0           | 0          | true       | true
+        [id: 1, name: 'xyz1'] | [id: 2, name: 'xyz1'] || -1          | -1         | false      | false
+        [id: 1, name: 'xyz1'] | [id: 1, name: 'xyz2'] || 0           | 0          | true       | false // name is not used in compareTo !!
+
+        tdi1 = new ToDoItem(_tdi1)
+        tdi2 = new ToDoItem(_tdi2)
+
     }
 
-    def "should sort TDI items" () {
+
+    def "should sort items"() {
         when:
-        ToDoItem tdi1 = new ToDoItem(id:0L, name:'test 0')
-        ToDoItem tdi2 = new ToDoItem(id:10L, name:'test 10')
-        List<ToDoItem> items = [tdi1, tdi2]
+        ToDoItem tdi1 = new ToDoItem(id: 0L, name: 'test 0')
+        ToDoItem tdi2 = new ToDoItem(id: 1L, name: 'test 1')
+        ToDoItem tdi3 = new ToDoItem(id: 10L, name: 'test 10')
+        List<ToDoItem> items = [tdi3, tdi2, tdi1]
         then:
-        items.sort().collect{it.id} == [tdi1.id, tdi2.id]
+        items.sort().collect { it.id } == [tdi1, tdi2, tdi3].collect { it.id }
     }
 }

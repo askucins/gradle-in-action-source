@@ -5,40 +5,47 @@ import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
 /*
-Since I don't have compareTo defined for ToDoItem I'm matching by 'id' explicitly
+Assumptions:
+- repository may keep only one item of a given id
+- findById returns an item (on match) or null (no match)
+- insert returns id (on success), or null (if there is already an item with that id in repository)
+- delete doesn't do anything if repository doesn't have that item (not the id - the whole item!)
+- update doesn't do anything if repository doesn't have an item of id like the argument
  */
 
 @EqualsAndHashCode
 @ToString(includeNames = true, includePackage = false)
 class InMemoryToDoRepository implements ToDoRepository {
 
-    private List<ToDoItem> repository = []
+    private Map<Long, ToDoItem> repository = [:]
 
     @Override
     List<ToDoItem> findAll() {
-        return repository
+        return new ArrayList<ToDoItem>(repository.values())
     }
 
     @Override
     ToDoItem findById(Long id) {
-        return repository.find { it.id == id }
+        return repository[(id)]
     }
 
     @Override
     Long insert(ToDoItem tdi) {
-        repository.add(tdi)
-        return tdi.id
+        if (repository.containsKey(tdi.id)) {
+            return null
+        } else {
+            repository[(tdi.id)] = tdi
+            return tdi.id
+        }
     }
 
     @Override
     void update(ToDoItem tdi) {
-        def tdiMatch = repository.find { it.id == tdi.id }
-        tdiMatch.name = tdi.name
-        tdi.completed = tdi.completed
+        repository.replace(tdi.id, tdi)
     }
 
     @Override
     void delete(ToDoItem tdi) {
-        repository.remove(tdi)
+        repository.remove(tdi.id, tdi)
     }
 }

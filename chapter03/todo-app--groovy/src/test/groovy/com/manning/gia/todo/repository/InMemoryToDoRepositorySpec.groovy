@@ -12,8 +12,7 @@ class InMemoryToDoRepositorySpec extends Specification {
         repo.findAll().size() == 0
     }
 
-    //TODO Questionable...
-    def "should allow to delete an item from empty repository"() {
+    def "should delete any item from empty repository"() {
         given:
         ToDoItem tdi = new ToDoItem(id: 0, name: 'test')
         when:
@@ -29,23 +28,41 @@ class InMemoryToDoRepositorySpec extends Specification {
         ToDoRepository repo = new InMemoryToDoRepository()
         ToDoItem tdi = new ToDoItem(id: 0, name: 'test')
         when:
-        repo.insert(tdi)
+        Long insertedId = repo.insert(tdi)
         then:
-        repo.findAll().contains(tdi)
+        insertedId == tdi.id
+    }
+
+    def "should not insert an item if repository contains an item with the same id"() {
+        given:
+        ToDoItem tdiBase = new ToDoItem(id: 0, name: 'test')
+        ToDoItem tdi = new ToDoItem(id: 0, name: 'test 2')
+        assert tdiBase.id == tdi.id
+        ToDoRepository repo = new InMemoryToDoRepository()
+        repo.insert(tdiBase)
+        when:
+        def response = repo.insert(tdi)
+        then: "no item inserted"
+        response == null
         and:
-        repo.findById(tdi.id) == tdi
+        def items = repo.findAll()
+        items.size() == 1
+        and: "no existing item updated"
+        items.first().equals(tdiBase) && !items.first().equals(tdi)
     }
 
     def "should insert an item to a not empty repository"() {
         given:
         ToDoRepository repo = new InMemoryToDoRepository()
-        ToDoItem tdi = new ToDoItem(id: 1, name: 'test')
-        repo.insert(tdi)
-        ToDoItem tdiAnother = new ToDoItem(id: 2, name: 'test')
+        ToDoItem tdiBase = new ToDoItem(id: 1, name: 'test')
+        ToDoItem tdi = new ToDoItem(id: 2, name: 'test')
+        repo.insert(tdiBase)
         when:
-        repo.insert(tdiAnother)
+        Long inserted = repo.insert(tdi)
         then:
-        repo.findAll().sort({ it.id }) == [tdi, tdiAnother]
+        inserted == tdi.id
+        and:
+        repo.findAll().sort({ it.id }) == [tdiBase, tdi]
     }
 
     def "should insert 100 items to an empty repository"() {
@@ -59,7 +76,7 @@ class InMemoryToDoRepositorySpec extends Specification {
         repo.findAll().sort({ it.id }) == items
     }
 
-    def "should remove an item from repository"() {
+    def "should delete an existing item from repository"() {
         given:
         ToDoRepository repo = new InMemoryToDoRepository()
         ToDoItem tdi = new ToDoItem(id: 1, name: 'test')
@@ -72,49 +89,97 @@ class InMemoryToDoRepositorySpec extends Specification {
         repo.findById(tdi.id) == null
     }
 
-    //TODO Questionable...
-    def "should remove only a requested item"() {
+    def "should not delete an item if only id matches"() {
         given:
+        ToDoItem tdiBase = new ToDoItem(id: 1, name: 'Base')
+        ToDoItem tdi = new ToDoItem(id: 1, name: 'Another')
+        assert tdiBase.id == tdi.id
+        assert !tdiBase.equals(tdi)
         ToDoRepository repo = new InMemoryToDoRepository()
-        ToDoItem tdi = new ToDoItem(id: 1, name: 'test 1')
-        ToDoItem tdiSameId = new ToDoItem(id: 1, name: 'test 2')
-        repo.insert(tdi) == tdi.id
-        repo.insert(tdiSameId) == tdiSameId.id
+        repo.insert(tdiBase)
         when:
         repo.delete(tdi)
         then:
-        repo.findAll().size() == 1
+        def items = repo.findAll()
+        items.size() == 1
         and:
-        repo.findAll().first() == tdiSameId
+        items.first().equals(tdiBase)
     }
 
-    //TODO Questionable...
-    def "should remove only a requested item, even if there are more similar"() {
+    def "should delete do nothing if an item id is not in repository"() {
         given:
+        ToDoItem tdiBase = new ToDoItem(id: 1, name: 'Base')
+        ToDoItem tdi = new ToDoItem(id: 2, name: 'Another')
+        assert tdiBase.id != tdi.id
         ToDoRepository repo = new InMemoryToDoRepository()
-        ToDoItem tdi = new ToDoItem(id: 1, name: 'test 1')
-        ToDoItem tdiSame = new ToDoItem(id: 1, name: 'test 1')
-        repo.insert(tdi) == tdi.id
-        repo.insert(tdiSame) == tdiSame.id
+        repo.insert(tdiBase)
         when:
         repo.delete(tdi)
         then:
-        repo.findAll().size() == 1
+        def items = repo.findAll()
+        items.size() == 1
         and:
-        repo.findAll().first() == tdiSame
+        items.first().equals(tdiBase)
     }
 
-    def "should update all matching items if there are more similar"() {
+    def "should update an item in the repository"() {
         given:
+        ToDoItem tdiBase = new ToDoItem(id: 0, name: 'test')
+        ToDoItem tdi = new ToDoItem(id: 0, name: 'update')
+        assert tdiBase.id == tdi.id
+        assert !tdiBase.equals(tdi)
         ToDoRepository repo = new InMemoryToDoRepository()
-        ToDoItem tdi = new ToDoItem(id: 1, name: 'test 1')
-        ToDoItem tdiSame = new ToDoItem(id: 1, name: 'test 1')
-        repo.insert(tdi) == tdi.id
-        repo.insert(tdiSame) == tdiSame.id
+        repo.insert(tdiBase)
         when:
-        ToDoItem tdiUpdate = new ToDoItem(id: 1, name: 'update')
-        repo.update(tdiUpdate)
-        then:
-        repo.findAll().grep { it.id == 1 }.every{ it.name == 'update' }
+        repo.update(tdi)
+        then: "item was updated, not added to repo"
+        def items = repo.findAll().grep { it.id == tdi.id }
+        items.size() == 1
+        and:
+        items.first().equals(tdi)
     }
+
+    def "should update do nothing if an item is not in repository"() {
+        given:
+        ToDoItem tdiBase = new ToDoItem(id: 0, name: 'test')
+        ToDoItem tdi = new ToDoItem(id: 1, name: 'update')
+        assert tdiBase.id != tdi.id
+        ToDoRepository repo = new InMemoryToDoRepository()
+        repo.insert(tdiBase)
+        when:
+        repo.update(tdi)
+        then:
+        def items = repo.findAll()
+        items.size() == 1
+        and:
+        items.first().equals(tdiBase)
+    }
+
+    def "should findById return nothing if an item with requested id is not in repository"() {
+        given:
+        ToDoItem tdiBase = new ToDoItem(id: 0, name: 'test')
+        ToDoItem tdi = new ToDoItem(id: 1, name: 'update')
+        assert tdiBase.id != tdi.id
+        ToDoRepository repo = new InMemoryToDoRepository()
+        repo.insert(tdiBase)
+        when:
+        def foundItem = repo.findById(tdi.id)
+        then:
+        foundItem == null
+    }
+
+    def "should findById return item if it is in repository"() {
+        given:
+        ToDoItem tdiBase = new ToDoItem(id: 0, name: 'base')
+        ToDoItem tdi = new ToDoItem(id: 1, name: 'another')
+        assert tdiBase.id != tdi.id
+        ToDoRepository repo = new InMemoryToDoRepository()
+        repo.insert(tdiBase)
+        repo.insert(tdi)
+        when:
+        def foundItem = repo.findById(tdi.id)
+        then:
+        foundItem.equals(tdi)
+    }
+
 }

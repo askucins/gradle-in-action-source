@@ -26,10 +26,8 @@ class ToDoItemSpec extends Specification {
         [id: 1]               | [id: 2]               || false
         [id: 1]               | [id: 10]              || false
         [id: 1, name: 'xyz1'] | [id: 1, name: 'xyz1'] || true
-        [id: 1, name: 'xyz1'] | [id: 1, name: 'xyz2'] || false
         [id: 1, name: 'xyz1'] | [id: 2, name: 'xyz1'] || false
-        [name: 'xyz1']        | [name: 'xyz1']        || true
-        [name: 'xyz1']        | [name: 'xyz2']        || false
+        [id: 1, name: 'xyz1'] | [id: 1, name: 'xyz2'] || true // name is not used in compareTo !!
     }
 
     def "should sort TDI items" () {

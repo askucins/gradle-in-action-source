@@ -4,6 +4,10 @@ import com.manning.gia.todo.model.ToDoItem
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentMap
+import java.util.concurrent.atomic.AtomicLong
+
 /*
 Assumptions:
 - repository may keep only one item of a given id
@@ -17,11 +21,15 @@ Assumptions:
 @ToString(includeNames = true, includePackage = false)
 class InMemoryToDoRepository implements ToDoRepository {
 
-    private Map<Long, ToDoItem> repository = [:]
+    //TODO - not finished yet
+
+    private AtomicLong currentId = new AtomicLong()
+    private ConcurrentMap<Long, ToDoItem> repository = new ConcurrentHashMap<Long, ToDoItem>()
 
     @Override
     List<ToDoItem> findAll() {
-        return new ArrayList<ToDoItem>(repository.values())
+        List<ToDoItem> items = new ArrayList<ToDoItem>(repository.values())
+        return items.sort()
     }
 
     @Override

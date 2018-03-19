@@ -182,4 +182,9 @@ class InMemoryToDoRepositorySpec extends Specification {
         foundItem.equals(tdi)
     }
 
+    def "should findAll return sorted collection of items from repository" () {
+        expect:
+        false
+    }
+
 }

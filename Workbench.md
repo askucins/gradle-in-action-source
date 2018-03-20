@@ -2,6 +2,11 @@
 * [Gradle Project](https://docs.gradle.org/4.6/dsl/org.gradle.api.Project.html)
 * [Gradle javadoc](https://docs.gradle.org/current/javadoc/index.html)
 * [CLI](https://docs.gradle.org/4.6/userguide/command_line_interface.html)
+* [Annotation Type EqualsAndHashCode](http://docs.groovy-lang.org/latest/html/api/index.html?groovy/transform/EqualsAndHashCode.html)
+* [Mrhaki tips](http://mrhaki.blogspot.com/search/label/Groovy)
+* [ConcurrentHashMap](https://ria101.wordpress.com/2011/12/12/concurrenthashmap-avoid-a-common-misuse/)
+* [Concurrency in Groovy](https://www.slideshare.net/paulk_asert/groovy-and-concurrency)
+
 
 ## Misc
 * Bumped gradle version to 4.6

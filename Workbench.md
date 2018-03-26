@@ -141,3 +141,5 @@ An excerpt from "Spock: Up and Running", by Rob Fletcher, O'Reilly Media, 2017
 > Because java.lang.String is final , Groovy cannot extend it. Subsequent versions of Java have introduced 
 > the CharSequence class to work around this kind of problem in alternative JVM languages, 
 > but Groovy’s implementation predates this.
+
+* ConcurrentHashMap

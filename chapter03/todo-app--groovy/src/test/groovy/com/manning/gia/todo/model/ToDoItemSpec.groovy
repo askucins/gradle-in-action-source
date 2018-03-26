@@ -5,11 +5,22 @@ import spock.lang.Unroll
 
 class ToDoItemSpec extends Specification {
 
-    def "should create new item"() {
+    def "should create new item with id and name"() {
         when:
         ToDoItem tdi = new ToDoItem(id: 1, name: 'test', completed: false)
         then:
         tdi.id == 1
+        and:
+        tdi.name == 'test'
+        and:
+        !tdi.completed
+    }
+
+    def "should create new item with name only"() {
+        when:
+        ToDoItem tdi = new ToDoItem(name: 'test')
+        then:
+        tdi.id == null
         and:
         tdi.name == 'test'
         and:
@@ -40,7 +51,6 @@ class ToDoItemSpec extends Specification {
         tdi2 = new ToDoItem(_tdi2)
 
     }
-
 
     def "should sort items"() {
         when:

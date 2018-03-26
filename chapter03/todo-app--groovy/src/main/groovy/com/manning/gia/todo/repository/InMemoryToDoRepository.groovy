@@ -17,43 +17,44 @@ Assumptions:
 - update doesn't do anything if repository doesn't have an item of id like the argument
  */
 
+//TODO not completed
+
 @EqualsAndHashCode
 @ToString(includeNames = true, includePackage = false)
 class InMemoryToDoRepository implements ToDoRepository {
 
-    //TODO - not finished yet
-
     private AtomicLong currentId = new AtomicLong()
-    private ConcurrentMap<Long, ToDoItem> repository = new ConcurrentHashMap<Long, ToDoItem>()
+    private ConcurrentMap<Long, ToDoItem> tdItems = new ConcurrentHashMap<Long, ToDoItem>()
 
     @Override
     List<ToDoItem> findAll() {
-        List<ToDoItem> items = new ArrayList<ToDoItem>(repository.values())
+       // List<ToDoItem> items = new ArrayList<ToDoItem>(items.values())
+        List<ToDoItem> items = tdItems.values()
         return items.sort()
     }
 
     @Override
     ToDoItem findById(Long id) {
-        return repository[(id)]
+        return tdItems[(id)]
     }
 
     @Override
     Long insert(ToDoItem tdi) {
-        if (repository.containsKey(tdi.id)) {
+        if (tdItems.containsKey(tdi.id)) {
             return null
         } else {
-            repository[(tdi.id)] = tdi
+            tdItems[(tdi.id)] = tdi
             return tdi.id
         }
     }
 
     @Override
     void update(ToDoItem tdi) {
-        repository.replace(tdi.id, tdi)
+        tdItems.replace(tdi.id, tdi)
     }
 
     @Override
     void delete(ToDoItem tdi) {
-        repository.remove(tdi.id, tdi)
+        tdItems.remove(tdi.id, tdi)
     }
 }

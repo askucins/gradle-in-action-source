@@ -5,26 +5,25 @@ import spock.lang.Unroll
 
 class ToDoItemSpec extends Specification {
 
-    def "should create new item with id and name"() {
+    @Unroll
+    def "should create new item like (id:#id, name:#name, completed:#completed)"() {
         when:
-        ToDoItem tdi = new ToDoItem(id: 1, name: 'test', completed: false)
+        ToDoItem tdi = new ToDoItem(args)
         then:
-        tdi.id == 1
+        tdi.id == id
         and:
-        tdi.name == 'test'
+        tdi.name == name
         and:
-        !tdi.completed
-    }
+        tdi.completed == completed
 
-    def "should create new item with name only"() {
-        when:
-        ToDoItem tdi = new ToDoItem(name: 'test')
-        then:
-        tdi.id == null
-        and:
-        tdi.name == 'test'
-        and:
-        !tdi.completed
+        where:
+        args                                       || id   | name      | completed
+        [:]                                        || null | null      | false
+        [name: 'Test 01']                          || null | 'Test 01' | false
+        [name: 'Test 02', completed: true]         || null | 'Test 02' | true
+        [name: 'Test 03', completed: false]        || null | 'Test 03' | false
+        [name: '', completed: false]               || null | ''        | false
+        [name: 'Test 05', completed: false, id: 1] || 1    | 'Test 05' | false
     }
 
     @Unroll
@@ -49,7 +48,6 @@ class ToDoItemSpec extends Specification {
 
         tdi1 = new ToDoItem(_tdi1)
         tdi2 = new ToDoItem(_tdi2)
-
     }
 
     def "should sort items"() {

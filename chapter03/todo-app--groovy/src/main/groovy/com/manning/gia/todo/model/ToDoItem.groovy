@@ -11,9 +11,13 @@ class ToDoItem implements Comparable<ToDoItem> {
     boolean completed
 
 
-    int compareTo(ToDoItem tdic) {
+    int compareTo(ToDoItem tdi) {
         // Please notice, that 'name' is not used here!
-        return this.id.compareTo(tdic.id)
+        // Which makes sense:
+        // - there could be two different items with the same name
+        // - there could be two identical items with the same name
+        //   (which means that this is effectively an identity)
+        return this.id.compareTo(tdi.id)
     }
 }
 
@@ -22,8 +26,8 @@ An excerpt from "Spock: Up and Running"
 by Rob Fletcher, O'Reilly Media, 2017
 
 What Is == Really Doing?
-Although it’s typical (and usually safe) to consider == an alias for the Java-style equals
-method, that’s something of an oversimplification.
+Although it’s typical (and usually safe) to consider == an alias for the Java-style
+equals method, that’s something of an oversimplification.
 Even though we can think of
     assert a == b
 as the Groovy equivalent to the Java

@@ -11,13 +11,13 @@
 ## Misc
 * Bumped gradle version to 4.6
 * To run a task in a specific sub-project
-```bash
-./gradlew helloWorld -p chapter02/helloworld-task-doLast
-```
+    ```bash
+    ./gradlew helloWorld -p chapter02/helloworld-task-doLast
+    ```
 * To stop daemon
-```bash
-./gradlew --stop
-```
+    ```bash
+    ./gradlew --stop
+    ```
 
 ## Chapter 01
 #### ant-build
@@ -108,38 +108,48 @@ BUILD SUCCESSFUL in 0s
 
 #### todo-app and todo-app--groovy
 * To run this app:
-```bash
-java -cp build/libs/* com.manning.gia.todo.ToDoApp
-```
+    ```bash
+    java -cp build/libs/* com.manning.gia.todo.ToDoApp
+    ```
 * Easy way to add 'equals' and 'hash' method in groovy
-[EqualsAndHashCode](http://docs.groovy-lang.org/latest/html/api/groovy/transform/EqualsAndHashCode.html)
+    [EqualsAndHashCode](http://docs.groovy-lang.org/latest/html/api/groovy/transform/EqualsAndHashCode.html)
 * To run a single test method:
-```bash
-gw clean test --tests com.manning.gia.todo.model.ToDoItemSpec."should create new item"
-```
+    ```bash
+    gw clean test --tests com.manning.gia.todo.model.ToDoItemSpec."should create new item"
+    ```
 * About 'equals' vs 'compareTo' (or '<=>')
+    
+    An excerpt from "Spock: Up and Running", by Rob Fletcher, O'Reilly Media, 2017
+    > What Is == Really Doing?
+    >
+    > Although it’s typical (and usually safe) to consider == an alias for the Java-style equals
+    > method, that’s something of an oversimplification.
+    > Even though we can think of
+    >
+    >     assert a == b
+    >
+    > as the Groovy equivalent to the Java
+    >
+    >     assert a.equals(b);
+    >
+    > in fact, if the class of a implements Comparable , Groovy will use:
+    >
+    >     a.compareTo(b) == 0;
+    >
+    > The primary reason this is done is so that the == operator can be reflexive between 
+    java.lang.String and groovy.lang.GString (the class that backs Groovy’s interpolated strings).
+    Because java.lang.String is final , Groovy cannot extend it. Subsequent versions of Java have introduced
+    the CharSequence class to work around this kind of problem in alternative JVM languages,
+    but Groovy’s implementation predates this.
 
-An excerpt from "Spock: Up and Running", by Rob Fletcher, O'Reilly Media, 2017
-> What Is == Really Doing?
->
-> Although it’s typical (and usually safe) to consider == an alias for the Java-style equals
-> method, that’s something of an oversimplification.
-> Even though we can think of
->
->     assert a == b
->
-> as the Groovy equivalent to the Java
->
->     assert a.equals(b);
->
-> in fact, if the class of a implements Comparable , Groovy will use:
->
->     a.compareTo(b) == 0;
->
-> The primary reason this is done is so that the == operator can be reflexive between
-> java.lang.String and groovy.lang.GString (the class that backs Groovy’s interpolated strings). 
-> Because java.lang.String is final , Groovy cannot extend it. Subsequent versions of Java have introduced 
-> the CharSequence class to work around this kind of problem in alternative JVM languages, 
-> but Groovy’s implementation predates this.
+* java.util.concurrent.atomic.AtomicLang
+  > A long value that may be updated atomically
+  
+  > \[...\] lock free thread safe
+  
+  > Atomic classes are not general purpose replacements for java.lang.Integer and related classes. They do not define methods such as equals, hashCode and compareTo.
 
 * ConcurrentHashMap
+  > A hash table supporting full concurrency of retrievals and high expected concurrency for updates
+  
+  

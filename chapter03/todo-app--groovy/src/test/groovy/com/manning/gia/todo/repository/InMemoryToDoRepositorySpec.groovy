@@ -7,16 +7,19 @@ import spock.lang.Issue
 
 class InMemoryToDoRepositorySpec extends Specification {
 
+    ToDoRepository repo
+
+    def setup() {
+        repo = new InMemoryToDoRepository()
+    }
+
     def "should create an empty repository"() {
-        when:
-        ToDoRepository repo = new InMemoryToDoRepository()
-        then:
+        expect:
         repo.findAll().size() == 0
     }
 
     def "should insert an item to an empty repository"() {
         given:
-        ToDoRepository repo = new InMemoryToDoRepository()
         ToDoItem tdi = new ToDoItem(name: 'test')
         when:
         Long insertedId = repo.insert(tdi)
@@ -26,7 +29,6 @@ class InMemoryToDoRepositorySpec extends Specification {
 
     def "should overwrite id of item while inserting to repository"() {
         given:
-        ToDoRepository repo = new InMemoryToDoRepository()
         Long id = -1
         ToDoItem tdi = new ToDoItem(id: id, name: 'test')
         when:
@@ -39,7 +41,6 @@ class InMemoryToDoRepositorySpec extends Specification {
 
     def "should overwrite id of item on repeated insert to repository"() {
         given:
-        ToDoRepository repo = new InMemoryToDoRepository()
         ToDoItem tdi = new ToDoItem(name: 'test')
         when:
         Long id = repo.insert(tdi)
@@ -55,7 +56,6 @@ class InMemoryToDoRepositorySpec extends Specification {
 
     def "should insert two items with the same names"() {
         given:
-        ToDoRepository repo = new InMemoryToDoRepository()
         String name = 'test'
         ToDoItem tdi = new ToDoItem(name: name)
         ToDoItem tdiNext = new ToDoItem(name: name)
@@ -71,7 +71,6 @@ class InMemoryToDoRepositorySpec extends Specification {
 
     def "should insert two items with different names"() {
         given:
-        ToDoRepository repo = new InMemoryToDoRepository()
         String name = 'test'
         String nameNext = 'test 2'
         ToDoItem tdi = new ToDoItem(name: name)
@@ -88,7 +87,6 @@ class InMemoryToDoRepositorySpec extends Specification {
 
     def "should insert 100 items to an empty repository"() {
         given:
-        ToDoRepository repo = new InMemoryToDoRepository()
         List<ToDoItem> items = []
         (0..<100).step(1, { items.add new ToDoItem(name: "test: $it") })
         List<Long> insertedIds = []
@@ -100,7 +98,6 @@ class InMemoryToDoRepositorySpec extends Specification {
 
     def "should findById return nothing if repository is empty"() {
         given:
-        ToDoRepository repo = new InMemoryToDoRepository()
         ToDoItem tdi = new ToDoItem(id: 1, name: 'test')
         when:
         ToDoItem foundItem = repo.findById(tdi.id)
@@ -110,7 +107,6 @@ class InMemoryToDoRepositorySpec extends Specification {
 
     def "should findById return inserted item"() {
         given:
-        ToDoRepository repo = new InMemoryToDoRepository()
         ToDoItem tdi = new ToDoItem(name: 'test')
         Long id = repo.insert(tdi)
         assert tdi.id == id
@@ -128,7 +124,6 @@ class InMemoryToDoRepositorySpec extends Specification {
     @Unroll
     def "should findById find an item #item"() {
         given:
-        ToDoRepository repo = new InMemoryToDoRepository()
         List<ToDoItem> tdItems = [
                 new ToDoItem(name: 'first'),
                 new ToDoItem(name: 'middle'),
@@ -152,7 +147,6 @@ class InMemoryToDoRepositorySpec extends Specification {
 
     def "should findById find 100 inserted items"() {
         given:
-        ToDoRepository repo = new InMemoryToDoRepository()
         List<ToDoItem> items = []
         (0..<100).step(1, { items.add new ToDoItem(name: "test: $it") })
         items.each { item -> repo.insert(item) }
@@ -165,7 +159,6 @@ class InMemoryToDoRepositorySpec extends Specification {
 
     def "should not findById return not inserted item"() {
         given:
-        ToDoRepository repo = new InMemoryToDoRepository()
         ToDoItem tdi = new ToDoItem(name: 'test')
         repo.insert(tdi)
         ToDoItem tdiNext = new ToDoItem(id: -1, name: 'not inserted')
@@ -178,7 +171,6 @@ class InMemoryToDoRepositorySpec extends Specification {
 
     def "should findAll return nothing if repository is empty"() {
         given:
-        ToDoRepository repo = new InMemoryToDoRepository()
         when:
         List<ToDoItem> foundItems = repo.findAll()
         then:
@@ -187,7 +179,6 @@ class InMemoryToDoRepositorySpec extends Specification {
 
     def "should findAll return inserted item"() {
         given:
-        ToDoRepository repo = new InMemoryToDoRepository()
         ToDoItem tdi = new ToDoItem(name: 'test')
         Long id = repo.insert(tdi)
         assert tdi.id == id
@@ -199,7 +190,6 @@ class InMemoryToDoRepositorySpec extends Specification {
 
     def "should findAll return sorted items"() {
         given:
-        ToDoRepository repo = new InMemoryToDoRepository()
         List<ToDoItem> items = [
                 new ToDoItem(name: 'first'),
                 new ToDoItem(name: 'middle'),
@@ -214,7 +204,6 @@ class InMemoryToDoRepositorySpec extends Specification {
 
     def "should findAll return 100 inserted items"() {
         given:
-        ToDoRepository repo = new InMemoryToDoRepository()
         List<ToDoItem> items = []
         (0..<100).step(1, { items.add new ToDoItem(name: "test: $it") })
         items.each { item -> repo.insert(item) }
@@ -226,7 +215,6 @@ class InMemoryToDoRepositorySpec extends Specification {
 
     def "should not findByAll return not inserted item"() {
         given:
-        ToDoRepository repo = new InMemoryToDoRepository()
         ToDoItem tdi = new ToDoItem(name: 'test')
         repo.insert(tdi)
         ToDoItem tdiNext = new ToDoItem(id: -1, name: 'not inserted')
@@ -240,7 +228,6 @@ class InMemoryToDoRepositorySpec extends Specification {
     def "should update an item in the repository"() {
         given:
         ToDoItem tdi = new ToDoItem(name: 'test')
-        ToDoRepository repo = new InMemoryToDoRepository()
         Long inserted = repo.insert(tdi)
         assert tdi.id == inserted
         when:
@@ -256,7 +243,6 @@ class InMemoryToDoRepositorySpec extends Specification {
     @Issue("Update should be applied only after a call is made - there is a bug here!!")
     def "should update an item in the repository only after calling an update"() {
         given:
-        InMemoryToDoRepository repo = new InMemoryToDoRepository()
         ToDoItem tdi = new ToDoItem(name: 'test')
         Long inserted = repo.insert(tdi)
         assert tdi.id == inserted
@@ -274,7 +260,6 @@ class InMemoryToDoRepositorySpec extends Specification {
         given:
         ToDoItem tdiBase = new ToDoItem(name: 'test')
         ToDoItem tdi = new ToDoItem(id: -1, name: 'update')
-        ToDoRepository repo = new InMemoryToDoRepository()
         repo.insert(tdiBase)
         assert tdiBase.id != tdi.id
         when: "tdi is not in repository"
@@ -291,7 +276,6 @@ class InMemoryToDoRepositorySpec extends Specification {
     def "should not delete item with a null id"() {
         given:
         ToDoItem tdi = new ToDoItem(id: null, name: 'test')
-        ToDoRepository repo = new InMemoryToDoRepository()
         when:
         repo.delete(tdi)
         then:
@@ -304,7 +288,6 @@ class InMemoryToDoRepositorySpec extends Specification {
         given:
         ToDoItem tdiBase = new ToDoItem(name: 'Base')
         ToDoItem tdi = new ToDoItem(id: -1, name: 'Another')
-        ToDoRepository repo = new InMemoryToDoRepository()
         repo.insert(tdiBase)
         assert tdiBase.id != tdi.id
         when:
@@ -321,7 +304,6 @@ class InMemoryToDoRepositorySpec extends Specification {
     def "should delete an item from repository"() {
         given:
         ToDoItem tdi = new ToDoItem(name: 'test')
-        ToDoRepository repo = new InMemoryToDoRepository()
         Long inserted = repo.insert(tdi)
         assert inserted == tdi.id
         when:
@@ -332,7 +314,6 @@ class InMemoryToDoRepositorySpec extends Specification {
 
     def "should delete an item from repository if there is an item with the same id in repo"() {
         given:
-        ToDoRepository repo = new InMemoryToDoRepository()
         ToDoItem tdiBase = new ToDoItem(name: 'test')
         repo.insert(tdiBase)
         when:

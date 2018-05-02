@@ -1,4 +1,5 @@
 apply plugin: 'groovy'
+apply plugin: 'application'
 
 repositories {
     jcenter()
@@ -17,3 +18,5 @@ tasks.withType(Test) {
         exceptionFormat 'full'
     }
 }
+
+mainClassName = 'com.manning.gia.todo.ToDoApp'

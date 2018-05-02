@@ -1,8 +1,8 @@
-package com.manning.gia.todo.utils;
+package com.manning.gia.todo.utils
 
 
 enum CommandLineInput {
-    FIND_ALL('a'), FIND_BY_ID('f'), INSERT('i'), UPDATE('u'), DELETE('d'), EXIT('e')
+    FIND_ALL('a' as char), FIND_BY_ID('f' as char), INSERT('i' as char), UPDATE('u' as char), DELETE('d' as char), EXIT('e' as char)
 
     private final static Map<Character, CommandLineInput> INPUTS
 

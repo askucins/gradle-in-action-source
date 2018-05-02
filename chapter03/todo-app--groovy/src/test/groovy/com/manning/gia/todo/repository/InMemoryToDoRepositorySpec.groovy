@@ -4,9 +4,6 @@ import com.manning.gia.todo.model.ToDoItem
 import spock.lang.Specification
 import spock.lang.Unroll
 
-// TODO most of those tests are utterly wrong - those local values SHOULD NOT be modified!!
-// FIXME!!!
-
 class InMemoryToDoRepositorySpec extends Specification {
 
     def "should create an empty repository"() {
@@ -26,7 +23,7 @@ class InMemoryToDoRepositorySpec extends Specification {
         insertedId == tdi.id
     }
 
-    def "should overwrite id of item on insert to repository"() {
+    def "should overwrite id of item while inserting to repository"() {
         given:
         ToDoRepository repo = new InMemoryToDoRepository()
         Long id = -1
@@ -93,11 +90,11 @@ class InMemoryToDoRepositorySpec extends Specification {
         ToDoRepository repo = new InMemoryToDoRepository()
         List<ToDoItem> items = []
         (0..<100).step(1, { items.add new ToDoItem(name: "test: $it") })
-        List<Long> inserted = []
+        List<Long> insertedIds = []
         when:
-        items.each { item -> inserted.add(repo.insert(item)) }
+        items.each { item -> insertedIds.add(repo.insert(item)) }
         then:
-        items*.id == inserted
+        items*.id == insertedIds
     }
 
     def "should findById return nothing if repository is empty"() {
@@ -131,19 +128,19 @@ class InMemoryToDoRepositorySpec extends Specification {
     def "should findById find an item #item"() {
         given:
         ToDoRepository repo = new InMemoryToDoRepository()
-        List<ToDoItem> items = [
+        List<ToDoItem> tdItems = [
                 new ToDoItem(name: 'first'),
                 new ToDoItem(name: 'middle'),
                 new ToDoItem(name: 'last')
         ]
-        items.each { item -> repo.insert(item) }
+        tdItems.each { item -> repo.insert(item) }
         when:
-        ToDoItem currentItem = items.get(cid)
-        ToDoItem found = repo.findById(currentItem.id)
+        ToDoItem tdi = tdItems[(cid)]
+        ToDoItem found = repo.findById(tdi.id)
         then:
-        found.id == currentItem.id
+        found.id == tdi.id
         and:
-        found.name == currentItem.name
+        found.name == tdi.name
 
         where:
         cid | item
@@ -170,7 +167,7 @@ class InMemoryToDoRepositorySpec extends Specification {
         ToDoRepository repo = new InMemoryToDoRepository()
         ToDoItem tdi = new ToDoItem(name: 'test')
         repo.insert(tdi)
-        ToDoItem tdiNext = new ToDoItem(id: 2, name: 'not inserted')
+        ToDoItem tdiNext = new ToDoItem(id: -1, name: 'not inserted')
         assert tdi.id != tdiNext.id
         when:
         ToDoItem found = repo.findById(tdiNext.id)
@@ -231,7 +228,7 @@ class InMemoryToDoRepositorySpec extends Specification {
         ToDoRepository repo = new InMemoryToDoRepository()
         ToDoItem tdi = new ToDoItem(name: 'test')
         repo.insert(tdi)
-        ToDoItem tdiNext = new ToDoItem(id: 2, name: 'not inserted')
+        ToDoItem tdiNext = new ToDoItem(id: -1, name: 'not inserted')
         assert tdi.id != tdiNext.id
         when:
         List<ToDoItem> foundItems = repo.findAll()
@@ -239,131 +236,109 @@ class InMemoryToDoRepositorySpec extends Specification {
         foundItems.collect { [it.id, it.name] } == [[tdi.id, tdi.name]]
     }
 
-    def "should update an item in the repository" () {
-        given:
-        InMemoryToDoRepository repo = new InMemoryToDoRepository()
-        ToDoItem tdi = new ToDoItem(name: 'test', completed: false)
-        Long id = repo.insert(tdi)
-        assert tdi.id == id
-        when:
-        tdi.name = 'updated'
-        then: "local changes are not propagated to the repository"
-        repo.findById(id).name != tdi.name
-        when:
-        repo.update(tdi)
-        then:"until repo is updated"
-        repo.findById(id).name == tdi.name
-    }
-
-
-    /*
-
-    def "should not delete item without id"() {
+    def "should update an item in the repository"() {
         given:
         ToDoItem tdi = new ToDoItem(name: 'test')
+        ToDoRepository repo = new InMemoryToDoRepository()
+        Long inserted = repo.insert(tdi)
+        assert tdi.id == inserted
+        when:
+        tdi.name = 'Updated'
+        repo.update(tdi)
+        ToDoItem tdiFound = repo.findById(tdi.id)
+        then:
+        tdiFound.id == tdi.id
+        and:
+        tdiFound.name == tdi.name
+    }
+
+    def "should update an item in the repository only after calling an update"() {
+        given:
+        InMemoryToDoRepository repo = new InMemoryToDoRepository()
+        ToDoItem tdi = new ToDoItem(name: 'test')
+        Long inserted = repo.insert(tdi)
+        assert tdi.id == inserted
+        when:
+        tdi.name = 'updated'
+        then: "local changes are not propagated to the repository" //TODO This seems to be a bug!!
+        repo.findById(tdi.id).name != tdi.name
+        when:
+        repo.update(tdi)
+        then: "until repo is updated"
+        repo.findById(tdi.id).name == tdi.name
+    }
+
+    def "should update do nothing if an item is not in repository"() {
+        given:
+        ToDoItem tdiBase = new ToDoItem(name: 'test')
+        ToDoItem tdi = new ToDoItem(id: -1, name: 'update')
+        ToDoRepository repo = new InMemoryToDoRepository()
+        repo.insert(tdiBase)
+        assert tdiBase.id != tdi.id
+        when: "tdi is not in repository"
+        repo.update(tdi)
+        then:
+        def items = repo.findAll()
+        items.size() == 1
+        and:
+        items.first().id == tdiBase.id
+        and:
+        items.first().name == tdiBase.name
+    }
+
+    def "should not delete item with a null id"() {
+        given:
+        ToDoItem tdi = new ToDoItem(id: null, name: 'test')
         ToDoRepository repo = new InMemoryToDoRepository()
         when:
         repo.delete(tdi)
         then:
-        IllegalArgumentException e = thrown()
+        NullPointerException e = thrown()
         and:
         repo.findAll().size() == 0
+    }
+
+    def "should delete do nothing if an item id is not in repository"() {
+        given:
+        ToDoItem tdiBase = new ToDoItem(name: 'Base')
+        ToDoItem tdi = new ToDoItem(id: -1, name: 'Another')
+        ToDoRepository repo = new InMemoryToDoRepository()
+        repo.insert(tdiBase)
+        assert tdiBase.id != tdi.id
+        when:
+        repo.delete(tdi)
+        then:
+        def items = repo.findAll()
+        items.size() == 1
+        and:
+        items.first().id == tdiBase.id
+        and:
+        items.first().name == tdiBase.name
     }
 
     def "should delete an item from repository"() {
         given:
         ToDoItem tdi = new ToDoItem(name: 'test')
         ToDoRepository repo = new InMemoryToDoRepository()
-        Long insertedId = repo.insert(tdi)
-        assert insertedId == tdi.id
+        Long inserted = repo.insert(tdi)
+        assert inserted == tdi.id
         when:
         repo.delete(tdi)
         then:
         repo.findAll().size() == 0
     }
 
-    def "should delete an existing item from repository"() {
+    def "should delete an item from repository if there is an item with the same id in repo"() {
         given:
         ToDoRepository repo = new InMemoryToDoRepository()
-        ToDoItem tdi = new ToDoItem(id: 1, name: 'test')
-        repo.insert(tdi) == tdi.id
+        ToDoItem tdiBase = new ToDoItem(name: 'test')
+        repo.insert(tdiBase)
         when:
+        ToDoItem tdi = new ToDoItem(id: tdiBase.id, name: 'different')
         repo.delete(tdi)
         then:
         repo.findAll().size() == 0
         and:
-        repo.findById(tdi.id) == null
+        repo.findById(tdiBase.id) == null
     }
-
-    def "should not delete an item if only id matches"() {
-        given:
-        ToDoItem tdiBase = new ToDoItem(id: 1, name: 'Base')
-        ToDoItem tdi = new ToDoItem(id: 1, name: 'Another')
-        assert tdiBase.id == tdi.id
-        assert !tdiBase.equals(tdi)
-        ToDoRepository repo = new InMemoryToDoRepository()
-        repo.insert(tdiBase)
-        when:
-        repo.delete(tdi)
-        then:
-        def items = repo.findAll()
-        items.size() == 1
-        and:
-        items.first().equals(tdiBase)
-    }
-
-    def "should delete do nothing if an item id is not in repository"() {
-        given:
-        ToDoItem tdiBase = new ToDoItem(id: 1, name: 'Base')
-        ToDoItem tdi = new ToDoItem(id: 2, name: 'Another')
-        assert tdiBase.id != tdi.id
-        ToDoRepository repo = new InMemoryToDoRepository()
-        repo.insert(tdiBase)
-        when:
-        repo.delete(tdi)
-        then:
-        def items = repo.findAll()
-        items.size() == 1
-        and:
-        items.first().equals(tdiBase)
-    }
-
-    def "should update an item in the repository"() {
-        given:
-        ToDoItem tdiBase = new ToDoItem(id: 0, name: 'test')
-        ToDoItem tdi = new ToDoItem(id: 0, name: 'update')
-        assert tdiBase.id == tdi.id
-        assert !tdiBase.equals(tdi)
-        ToDoRepository repo = new InMemoryToDoRepository()
-        repo.insert(tdiBase)
-        when:
-        repo.update(tdi)
-        then: "item was updated, not added to repo"
-        def items = repo.findAll().grep { it.id == tdi.id }
-        items.size() == 1
-        and:
-        items.first().equals(tdi)
-    }
-
-    def "should update do nothing if an item is not in repository"() {
-        given:
-        ToDoItem tdiBase = new ToDoItem(id: 0, name: 'test')
-        ToDoItem tdi = new ToDoItem(id: 1, name: 'update')
-        assert tdiBase.id != tdi.id
-        ToDoRepository repo = new InMemoryToDoRepository()
-        repo.insert(tdiBase)
-        when:
-        repo.update(tdi)
-        then:
-        def items = repo.findAll()
-        items.size() == 1
-        and:
-        items.first().equals(tdiBase)
-    }
-
-    def "should findAll return sorted collection of items from repository" () {
-        expect:
-        false
-    }
-*/
 }

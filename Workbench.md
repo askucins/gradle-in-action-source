@@ -143,13 +143,39 @@ BUILD SUCCESSFUL in 0s
     but Groovy’s implementation predates this.
 
 * java.util.concurrent.atomic.AtomicLang
-  > A long value that may be updated atomically
+    > A long value that may be updated atomically
   
-  > \[...\] lock free thread safe
+    > \[...\] lock free thread safe
   
-  > Atomic classes are not general purpose replacements for java.lang.Integer and related classes. They do not define methods such as equals, hashCode and compareTo.
+    > Atomic classes are not general purpose replacements for java.lang.Integer and related classes. They do not define methods such as equals, hashCode and compareTo.
 
 * ConcurrentHashMap
-  > A hash table supporting full concurrency of retrievals and high expected concurrency for updates
+    > A hash table supporting full concurrency of retrievals and high expected concurrency for updates
   
-  
+* Passing objects in java/groovy as functions arguments from [jonskeet.uk](http://jonskeet.uk/java/passing.html)
+    
+    >**Myth: "Objects are passed by reference, primitives are passed by value"**\
+    Some proponents of this then say, "Ah, except for immutable objects which are passed by value \[etc\]"
+    which introduces loads of rules without really tackling how Java works. 
+    Fortunately the truth is much simpler:\
+    **Truth #1: Everything in Java is passed by value. Objects, however, are never passed at all.**
+    That needs some explanation - after all, if we can't pass objects, how can we do any work? 
+    The answer is that we pass references to objects. 
+    That sounds like it's getting dangerously close to the myth, until you look at truth #2:\
+    **Truth #2: The values of variables are always primitives or references, never objects.**
+    This is probably the single most important point in learning Java properly. 
+    It's amazing how far you can actually get without knowing it, 
+    in fact - but vast numbers of things suddenly make sense when you grasp it.
+    
+    **Example**
+    ```groovy
+    class Stuff {
+        String name
+    }
+    def changeIt(Stuff st) {
+        st.name = 'Changed!'
+    }
+    Stuff stuff = new Stuff(name:'Test')
+    changeIt(stuff)
+    assert stuff.name == 'Changed!'
+    ```   

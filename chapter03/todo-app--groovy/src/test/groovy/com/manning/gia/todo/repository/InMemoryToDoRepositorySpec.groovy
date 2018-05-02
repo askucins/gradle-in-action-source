@@ -3,6 +3,7 @@ package com.manning.gia.todo.repository
 import com.manning.gia.todo.model.ToDoItem
 import spock.lang.Specification
 import spock.lang.Unroll
+import spock.lang.Issue
 
 class InMemoryToDoRepositorySpec extends Specification {
 
@@ -252,6 +253,7 @@ class InMemoryToDoRepositorySpec extends Specification {
         tdiFound.name == tdi.name
     }
 
+    @Issue("Update should be applied only after a call is made - there is a bug here!!")
     def "should update an item in the repository only after calling an update"() {
         given:
         InMemoryToDoRepository repo = new InMemoryToDoRepository()

@@ -2,9 +2,14 @@ package com.manning.gia.todo.utils
 
 
 enum CommandLineInput {
-    FIND_ALL('a' as char), FIND_BY_ID('f' as char), INSERT('i' as char), UPDATE('u' as char), DELETE('d' as char), EXIT('e' as char)
+    FIND_ALL('a' as char),
+    FIND_BY_ID('f' as char),
+    INSERT('i' as char),
+    UPDATE('u' as char),
+    DELETE('d' as char),
+    EXIT('e' as char)
 
-    private final static Map<Character, CommandLineInput> INPUTS
+    final static Map<Character, CommandLineInput> INPUTS
 
     static {
         INPUTS = new HashMap<Character, CommandLineInput>()
@@ -14,7 +19,7 @@ enum CommandLineInput {
         }
     }
 
-    private final char shortCmd
+    final char shortCmd
 
     private CommandLineInput(char shortCmd) {
         this.shortCmd = shortCmd

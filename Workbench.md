@@ -111,6 +111,10 @@ BUILD SUCCESSFUL in 0s
     ```bash
     java -cp build/libs/* com.manning.gia.todo.ToDoApp
     ```
+    or
+    ```bash
+    java -cp build/classes/java/main com.manning.gia.todo.ToDoApp
+    ```
 * Easy way to add 'equals' and 'hash' method in groovy
     [EqualsAndHashCode](http://docs.groovy-lang.org/latest/html/api/groovy/transform/EqualsAndHashCode.html)
 * To run a single test method:
@@ -179,3 +183,53 @@ BUILD SUCCESSFUL in 0s
     changeIt(stuff)
     assert stuff.name == 'Changed!'
     ```   
+* Groovy vs java arrays initialization
+    * Java way:
+    ```java
+    char[] stuff = new char[] {'x'};
+    ```
+    
+    * Groovy way:
+    ```groovy
+    char[] stuff = ['x'] as char[]
+    ```
+
+    Source: [Groovy lang](http://docs.groovy-lang.org/next/html/documentation/core-syntax.html#_arrays)
+    
+* Building and running
+    
+    * building:
+    ```bash
+    gw clean build
+    ```
+    * running
+    ```bash
+    java -cp build/classes/groovy/main:$GROOVY_HOME/embeddable/groovy-all-2.4.14.jar com.manning.gia.todo.ToDoApp
+    ```
+    
+* Problems
+ 
+    A basic _run and exit_ scenario exits with an error message
+    ```bash
+    askuci@lelek:~/work/src/gradle-in-action-source/chapter03/todo-app--groovy (chapter03>)$ java -cp build/classes/groovy/main:$GROOVY_HOME/embeddable/groovy-all-2.4.14.jar com.manning.gia.todo.ToDoApp
+    
+    --- To Do Application ---
+    Please make a choice:
+    (a)ll items
+    (f)ind a specific item
+    (i)nsert a new item
+    (u)pdate an existing item
+    (d)elete an existing item
+    (e)xit
+    > e
+    Exception in thread "main" groovy.lang.MissingPropertyException: No such property: FIND_ALL for class: com.manning.gia.todo.utils.CommandLineInputHandler
+    	at org.codehaus.groovy.runtime.ScriptBytecodeAdapter.unwrap(ScriptBytecodeAdapter.java:66)
+    	at org.codehaus.groovy.runtime.callsite.GetEffectivePogoPropertySite.getProperty(GetEffectivePogoPropertySite.java:87)
+    	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callGroovyObjectGetProperty(AbstractCallSite.java:310)
+    	at com.manning.gia.todo.utils.CommandLineInputHandler.processInput(CommandLineInputHandler.groovy:31)
+    	at com.manning.gia.todo.utils.CommandLineInputHandler$processInput$1.call(Unknown Source)
+    	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
+    	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:116)
+    	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:128)
+    	at com.manning.gia.todo.ToDoApp.main(ToDoApp.groovy:19)
+    ```

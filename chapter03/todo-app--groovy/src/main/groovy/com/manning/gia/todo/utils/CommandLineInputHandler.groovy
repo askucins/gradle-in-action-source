@@ -4,19 +4,20 @@ import com.manning.gia.todo.model.ToDoItem
 import com.manning.gia.todo.repository.InMemoryToDoRepository
 import com.manning.gia.todo.repository.ToDoRepository
 
-
 class CommandLineInputHandler {
     private ToDoRepository toDoRepository = new InMemoryToDoRepository()
 
     void printOptions() {
-        System.out.println("\n--- To Do Application ---")
-        System.out.println("Please make a choice:")
-        System.out.println("(a)ll items")
-        System.out.println("(f)ind a specific item")
-        System.out.println("(i)nsert a new item")
-        System.out.println("(u)pdate an existing item")
-        System.out.println("(d)elete an existing item")
-        System.out.println("(e)xit")
+        def usage = """
+            --- To Do Application ---
+            Please make a choice:
+            (a)ll items
+            (f)ind a specific item
+            (i)nsert a new item
+            (u)pdate an existing item
+            (d)elete an existing item
+            (e)xit"""
+        println usage.stripIndent()
     }
 
     String readInput() {

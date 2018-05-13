@@ -4,7 +4,7 @@ import com.manning.gia.todo.utils.CommandLineInput
 import com.manning.gia.todo.utils.CommandLineInputHandler
 
 class ToDoApp {
-    public static final char DEFAULT_INPUT = '\u0000'
+    static char DEFAULT_INPUT = '\u0000'
 
     static void main(String... args) {
         CommandLineInputHandler commandLineInputHandler = new CommandLineInputHandler()

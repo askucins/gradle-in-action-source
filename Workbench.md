@@ -107,7 +107,7 @@ BUILD SUCCESSFUL in 0s
 ## Chapter 03
 
 #### todo-app and todo-app--groovy
-* To run this app:
+* To run this app (original java version):
     ```bash
     java -cp build/libs/* com.manning.gia.todo.ToDoApp
     ```

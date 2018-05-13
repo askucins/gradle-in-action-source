@@ -206,6 +206,20 @@ BUILD SUCCESSFUL in 0s
     ```bash
     java -cp build/classes/groovy/main:$GROOVY_HOME/embeddable/groovy-all-2.4.14.jar com.manning.gia.todo.ToDoApp
     ```
+
+* Debugging console-dependent apps in IDE - problem with NPE!
+    
+    * See the Intellij tracker: [System.console() returns null](https://youtrack.jetbrains.com/issue/IDEABKL-5949)
+    * And [Console javadoc](http://docs.oracle.com/javase/7/docs/api/java/io/Console.html)
+        > If the virtual machine is started from an interactive command line 
+        without redirecting the standard input and output streams then its console will exist 
+        and will typically be connected to the keyboard and display from which the virtual machine was launched. 
+        If the virtual machine is started automatically, for example by a background job scheduler, 
+        then it will typically not have a console.
+        If this virtual machine has a console then it is represented by a unique instance of this class 
+        which can be obtained by invoking the System.console() method. 
+        If no console device is available then an invocation of that method will return null.
+    * Response to that is e.g. switching to [Scanner](https://docs.oracle.com/javase/7/docs/api/java/util/Scanner.html)
     
 * Problems
  

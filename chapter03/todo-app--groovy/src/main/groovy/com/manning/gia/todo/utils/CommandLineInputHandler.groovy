@@ -31,22 +31,22 @@ class CommandLineInputHandler {
             handleUnknownInput()
         } else {
             switch (input) {
-                case FIND_ALL:
+                case CommandLineInput.FIND_ALL:
                     printAllToDoItems()
                     break
-                case FIND_BY_ID:
+                case CommandLineInput.FIND_BY_ID:
                     printToDoItem()
                     break
-                case INSERT:
+                case CommandLineInput.INSERT:
                     insertToDoItem()
                     break
-                case UPDATE:
+                case CommandLineInput.UPDATE:
                     updateToDoItem()
                     break
-                case DELETE:
+                case CommandLineInput.DELETE:
                     deleteToDoItem()
                     break
-                case EXIT:
+                case CommandLineInput.EXIT:
                     break
                 default:
                     handleUnknownInput()

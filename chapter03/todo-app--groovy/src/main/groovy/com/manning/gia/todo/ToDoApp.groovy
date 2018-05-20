@@ -10,7 +10,7 @@ class ToDoApp {
         CommandLineInputHandler commandLineInputHandler = new CommandLineInputHandler()
         char command = DEFAULT_INPUT
 
-        while (CommandLineInput.EXIT.getShortCmd() != command) {
+        while (CommandLineInput.EXIT.shortCmd != command) {
             commandLineInputHandler.printOptions()
             String input = commandLineInputHandler.readInput()
             char[] inputChars = input.length() == 1 ? input.toCharArray() : [DEFAULT_INPUT] as char[]

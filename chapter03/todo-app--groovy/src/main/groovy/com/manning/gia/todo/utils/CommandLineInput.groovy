@@ -1,6 +1,5 @@
 package com.manning.gia.todo.utils
 
-
 enum CommandLineInput {
     FIND_ALL('a' as char),
     FIND_BY_ID('f' as char),
@@ -9,27 +8,15 @@ enum CommandLineInput {
     DELETE('d' as char),
     EXIT('e' as char)
 
-    final static Map<Character, CommandLineInput> INPUTS
-
-    static {
-        INPUTS = new HashMap<Character, CommandLineInput>()
-
-        for (CommandLineInput input : values()) {
-            INPUTS.put(input.getShortCmd(), input)
-        }
-    }
-
-    final char shortCmd
+    char shortCmd
 
     private CommandLineInput(char shortCmd) {
         this.shortCmd = shortCmd
     }
 
-    char getShortCmd() {
-        return shortCmd
-    }
+    // To have a reverse search (char -> enum)
+    static INPUTS = values().collectEntries { value -> [(value.shortCmd): value] }
 
-    static CommandLineInput getCommandLineInputForInput(char input) {
-        return INPUTS.get(input)
-    }
+    // A wrapper to that reverse search:
+    static CommandLineInput getCommandLineInputForInput(char input) { INPUTS[(input)] }
 }

@@ -4,6 +4,8 @@ import com.manning.gia.todo.model.ToDoItem
 import com.manning.gia.todo.repository.InMemoryToDoRepository
 import com.manning.gia.todo.repository.ToDoRepository
 
+import static com.manning.gia.todo.utils.CommandLineInput.*
+
 class CommandLineInputHandler {
     private ToDoRepository toDoRepository = new InMemoryToDoRepository()
     private scanner = new Scanner(System.in)
@@ -31,22 +33,22 @@ class CommandLineInputHandler {
             handleUnknownInput()
         } else {
             switch (input) {
-                case CommandLineInput.FIND_ALL:
+                case FIND_ALL:
                     printAllToDoItems()
                     break
-                case CommandLineInput.FIND_BY_ID:
+                case FIND_BY_ID:
                     printToDoItem()
                     break
-                case CommandLineInput.INSERT:
+                case INSERT:
                     insertToDoItem()
                     break
-                case CommandLineInput.UPDATE:
+                case UPDATE:
                     updateToDoItem()
                     break
-                case CommandLineInput.DELETE:
+                case DELETE:
                     deleteToDoItem()
                     break
-                case CommandLineInput.EXIT:
+                case EXIT:
                     break
                 default:
                     handleUnknownInput()

@@ -3,7 +3,6 @@ package com.manning.gia.todo.utils
 import static com.manning.gia.todo.utils.CommandLineInput.*
 
 class CommandLineInputHandler {
-
     private CommandLineInputHelper helper = new CommandLineInputHelper()
 
     void printOptions() {

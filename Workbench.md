@@ -221,7 +221,7 @@ BUILD SUCCESSFUL in 0s
         If no console device is available then an invocation of that method will return null.
     * Response to that is e.g. switching to [Scanner](https://docs.oracle.com/javase/7/docs/api/java/util/Scanner.html)
     
-* Problems
+* Problem with some imports (groovy vs Intellij)
  
     A basic _run and exit_ scenario exits with an error message
     ```bash
@@ -247,3 +247,38 @@ BUILD SUCCESSFUL in 0s
     	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:128)
     	at com.manning.gia.todo.ToDoApp.main(ToDoApp.groovy:19)
     ```
+    
+    However once imports are added to the com.manning.gia.todo.utils.CommandLineInputHandler it stops complaining
+    ```groovy
+    import static com.manning.gia.todo.utils.CommandLineInput.*
+    ```
+    
+* Two words about enum - [Enum values and valueOf](https://programming.guide/java/javadoc-for-enum-values.html)
+    ```java
+    /**
+     * Returns an array containing the constants of this enum 
+     * type, in the order they're declared.  This method may be
+     * used to iterate over the constants as follows:
+     *
+     *    for(E c : E.values())
+     *        System.out.println(c);
+     *
+     * @return an array containing the constants of this enum 
+     * type, in the order they're declared
+     */
+     public static E[] values();
+    /**
+     * Returns the enum constant of this type with the specified
+     * name.
+     * The string must match exactly an identifier used to declare
+     * an enum constant in this type.  (Extraneous whitespace 
+     * characters are not permitted.)
+     * 
+     * @return the enum constant with the specified name
+     * @throws IllegalArgumentException if this enum type has no
+     * constant with the specified name
+     */
+    public static E valueOf(String name);
+    ```
+
+&#9632

@@ -59,4 +59,38 @@ class ToDoItemSpec extends Specification {
         then:
         items.sort().collect { it.id } == [tdi1, tdi2, tdi3].collect { it.id }
     }
+
+    def "should throw exception when comparing items without id (except equals is used)"() {
+        given:
+        ToDoItem tdi1 = new ToDoItem(name: 'a')
+        ToDoItem tdi2 = new ToDoItem(name: 'a')
+
+        when:
+        tdi1 <=> tdi2
+        then:
+        NullPointerException eBySpaceshipOperator = thrown()
+        and:
+        eBySpaceshipOperator.message == 'Cannot invoke method compareTo() on null object'
+
+        when:
+        (tdi1.compareTo(tdi2))
+        then:
+        NullPointerException eByCompareTo = thrown()
+        and:
+        eByCompareTo.message == 'Cannot invoke method compareTo() on null object'
+
+        when:
+        (tdi1 == tdi2)
+        then:
+        NullPointerException eByEqualOperator = thrown()
+        and:
+        eByEqualOperator.message == 'Cannot invoke method compareTo() on null object'
+
+        when: "equals is used"
+        def result = (tdi1.equals(tdi2))
+        then: "exception is not thrown"
+        notThrown()
+        and:
+        result
+    }
 }

@@ -280,5 +280,24 @@ BUILD SUCCESSFUL in 0s
      */
     public static E valueOf(String name);
     ```
+* Capturing 'println'
+    Sometimes one needs to capture what is printed on the System.out during tests (ok, **I needed**). 
+    That is doable, a baisc solution is presented on this [StackOverflow question](https://stackoverflow.com/questions/3228427/redirect-system-out-println)
+    ```java
+    // Start capturing
+    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(buffer));
+    
+    // Run what is supposed to output something
+    ...
+    
+    // Stop capturing
+    System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+    
+    // Use captured content
+    String content = buffer.toString();
+    buffer.reset();
+    ```
+    
 
-&#9632
+&#9632;

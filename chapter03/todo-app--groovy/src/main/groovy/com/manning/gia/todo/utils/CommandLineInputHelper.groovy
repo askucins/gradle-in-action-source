@@ -30,6 +30,26 @@ class CommandLineInputHelper {
         println "Please select a valid option!"
     }
 
+
+    /* ************************************************************ */
+
+    private ToDoItem findToDoItem() {
+        Long id = askForItemId()
+        ToDoItem toDoItem = toDoRepository.findById(id)
+
+        if (toDoItem == null) {
+            System.err.println "To do item with ID " + id + " could not be found."
+        }
+
+        return toDoItem
+    }
+
+    private Long askForItemId() {
+        println "Please enter the item ID:"
+        String input = readInput()
+        return Long.parseLong(input)
+    }
+
     /* ************************************************************ */
     /* CREATE */
 
@@ -63,27 +83,8 @@ class CommandLineInputHelper {
         if (toDoItems.isEmpty()) {
             println "Nothing to do. Go relax!"
         } else {
-            for (ToDoItem toDoItem : toDoItems) {
-                println toDoItem
-            }
+            toDoItems.each { println it }
         }
-    }
-
-    private ToDoItem findToDoItem() {
-        Long id = askForItemId()
-        ToDoItem toDoItem = toDoRepository.findById(id)
-
-        if (toDoItem == null) {
-            System.err.println "To do item with ID " + id + " could not be found."
-        }
-
-        return toDoItem
-    }
-
-    private Long askForItemId() {
-        println "Please enter the item ID:"
-        String input = readInput()
-        return Long.parseLong(input)
     }
 
     /* ************************************************************ */
@@ -111,7 +112,7 @@ class CommandLineInputHelper {
 
         if (toDoItem != null) {
             toDoRepository.delete(toDoItem)
-            println "Successfully deleted to do item with ID " + toDoItem.getId() + "."
+            println "Successfully deleted to do item with ID ${toDoItem.id}."
         }
     }
 }

@@ -98,7 +98,7 @@ class CommandLineInputHelperSpec extends Specification {
 
         cleanup:
         System.out = new PrintStream(new FileOutputStream(FileDescriptor.out))
-        println "[${buffer.toString().trim()}]"
+        println "[\n${buffer.toString().trim()}]"
         buffer.reset()
     }
 
@@ -109,7 +109,7 @@ class CommandLineInputHelperSpec extends Specification {
         and:
         ToDoItem tdi = new ToDoItem(name: 'New TDI')
         toDoRepository.insert(tdi)
-        Long nonExistingId = - tdi.id
+        Long nonExistingId = -tdi.id
         and:
         scanner.nextLine() >> nonExistingId
         and:
@@ -122,8 +122,113 @@ class CommandLineInputHelperSpec extends Specification {
 
         cleanup:
         System.err = new PrintStream(new FileOutputStream(FileDescriptor.err))
-        println "[${buffer.toString().trim()}]"
+        println "\n[${buffer.toString().trim()}]"
         buffer.reset()
     }
-    
+
+    def "should print all items for non-empty repository"() {
+        given:
+        ToDoRepository toDoRepository = new InMemoryToDoRepository()
+        CommandLineInputHelper helper = new CommandLineInputHelper(scanner: scanner, toDoRepository: toDoRepository)
+        and:
+        def tdis = [new ToDoItem(name: 'New TDI-1'), new ToDoItem(name: 'New TDI-2')]
+        tdis.each { tdi -> toDoRepository.insert(tdi) }
+        and:
+        def buffer = new ByteArrayOutputStream()
+        System.out = new PrintStream(buffer)
+        when:
+        helper.printAllToDoItems()
+        then:
+        tdis.each { tdi -> assert buffer.toString().contains(tdi.toString()) }
+
+        cleanup:
+        System.out = new PrintStream(new FileOutputStream(FileDescriptor.out))
+        println "\n[${buffer.toString().trim()}]"
+        buffer.reset()
+    }
+
+    def "should print all items for empty repository"() {
+        given:
+        ToDoRepository toDoRepository = new InMemoryToDoRepository()
+        CommandLineInputHelper helper = new CommandLineInputHelper(scanner: scanner, toDoRepository: toDoRepository)
+        and:
+        def buffer = new ByteArrayOutputStream()
+        System.out = new PrintStream(buffer)
+        when:
+        helper.printAllToDoItems()
+        then:
+        buffer.toString().contains "Nothing to do. Go relax!"
+
+        cleanup:
+        System.out = new PrintStream(new FileOutputStream(FileDescriptor.out))
+        println "\n[${buffer.toString().trim()}]"
+        buffer.reset()
+    }
+
+    /* ************************************************************ */
+    /* UPDATE */
+
+    def "should update an existing item"() {
+        expect:
+        false
+    }
+
+    def "should handle an attempt to update a non-existing item"() {
+        expect:
+        false
+    }
+
+    /* ************************************************************ */
+    /* DELETE */
+
+    def "should delete an existing item"() {
+        given:
+        ToDoRepository toDoRepository = Spy(InMemoryToDoRepository)
+        CommandLineInputHelper helper = new CommandLineInputHelper(scanner: scanner, toDoRepository: toDoRepository)
+        and:
+        ToDoItem tdi = new ToDoItem(name: 'New TDI')
+        toDoRepository.insert(tdi)
+        and:
+        scanner.nextLine() >> tdi.id
+        and:
+        def buffer = new ByteArrayOutputStream()
+        System.out = new PrintStream(buffer)
+        when:
+        helper.deleteToDoItem()
+        then:
+        buffer.toString().contains "Successfully deleted to do item with ID ${tdi.id}."
+        and:
+        1 * toDoRepository.delete(tdi)
+
+        cleanup:
+        System.out = new PrintStream(new FileOutputStream(FileDescriptor.out))
+        println "[\n${buffer.toString().trim()}]"
+        buffer.reset()
+    }
+
+    def "should handle an attempt to delete a non-existing item"() {
+        given:
+        ToDoRepository toDoRepository = Spy(InMemoryToDoRepository)
+        CommandLineInputHelper helper = new CommandLineInputHelper(scanner: scanner, toDoRepository: toDoRepository)
+        and:
+        ToDoItem tdi = new ToDoItem(name: 'New TDI')
+        toDoRepository.insert(tdi)
+        Long nonExistingId = -tdi.id
+        and:
+        scanner.nextLine() >> nonExistingId
+        and:
+        def buffer = new ByteArrayOutputStream()
+        System.err = new PrintStream(buffer)
+        when:
+        helper.deleteToDoItem()
+        then:
+        buffer.toString().contains "To do item with ID $nonExistingId could not be found."
+        and:
+        0 * toDoRepository.delete(_ as ToDoItem)
+
+        cleanup:
+        System.err = new PrintStream(new FileOutputStream(FileDescriptor.err))
+        println "\n[${buffer.toString().trim()}]"
+        buffer.reset()
+    }
 }

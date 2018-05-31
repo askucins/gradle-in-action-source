@@ -6,12 +6,27 @@ import com.manning.gia.todo.repository.ToDoRepository
 import spock.lang.See
 import spock.lang.Specification
 
+@See(["https://stackoverflow.com/questions/47395946/spock-testing-output-from-printing-function",
+        "https://stackoverflow.com/questions/3228427/redirect-system-out-println"])
 class CommandLineInputHelperSpec extends Specification {
 
     Scanner scanner
+    ByteArrayOutputStream buffer
 
     def setup() {
         scanner = GroovyMock(Scanner)
+        buffer = new ByteArrayOutputStream()
+        System.out = new PrintStream(buffer)
+        System.err = new PrintStream(buffer)
+    }
+
+    def cleanup() {
+        System.out = new PrintStream(new FileOutputStream(FileDescriptor.out))
+        System.err = new PrintStream(new FileOutputStream(FileDescriptor.err))
+        println "[Test output:"
+        println "${buffer.toString().trim()}"
+        println "]"
+        buffer.reset()
     }
 
     def "should readInput call that scanner"() {
@@ -77,8 +92,6 @@ class CommandLineInputHelperSpec extends Specification {
     /* ************************************************************ */
     /* READ */
 
-    @See(["https://stackoverflow.com/questions/47395946/spock-testing-output-from-printing-function",
-            "https://stackoverflow.com/questions/3228427/redirect-system-out-println"])
     def "should print a requested ToDoItem"() {
         given:
         ToDoRepository toDoRepository = new InMemoryToDoRepository()
@@ -88,18 +101,10 @@ class CommandLineInputHelperSpec extends Specification {
         toDoRepository.insert(tdi)
         and:
         scanner.nextLine() >> tdi.id
-        and:
-        def buffer = new ByteArrayOutputStream()
-        System.out = new PrintStream(buffer)
         when:
         helper.printToDoItem()
         then:
         buffer.toString().contains tdi.toString()
-
-        cleanup:
-        System.out = new PrintStream(new FileOutputStream(FileDescriptor.out))
-        println "[\n${buffer.toString().trim()}]"
-        buffer.reset()
     }
 
     def "should handle a request to print non-existing ToDoItem"() {
@@ -112,18 +117,10 @@ class CommandLineInputHelperSpec extends Specification {
         Long nonExistingId = -tdi.id
         and:
         scanner.nextLine() >> nonExistingId
-        and:
-        def buffer = new ByteArrayOutputStream()
-        System.err = new PrintStream(buffer)
         when:
         helper.printToDoItem()
         then:
         buffer.toString().contains "To do item with ID $nonExistingId could not be found."
-
-        cleanup:
-        System.err = new PrintStream(new FileOutputStream(FileDescriptor.err))
-        println "\n[${buffer.toString().trim()}]"
-        buffer.reset()
     }
 
     def "should print all items for non-empty repository"() {
@@ -133,36 +130,20 @@ class CommandLineInputHelperSpec extends Specification {
         and:
         def tdis = [new ToDoItem(name: 'New TDI-1'), new ToDoItem(name: 'New TDI-2')]
         tdis.each { tdi -> toDoRepository.insert(tdi) }
-        and:
-        def buffer = new ByteArrayOutputStream()
-        System.out = new PrintStream(buffer)
         when:
         helper.printAllToDoItems()
         then:
         tdis.each { tdi -> assert buffer.toString().contains(tdi.toString()) }
-
-        cleanup:
-        System.out = new PrintStream(new FileOutputStream(FileDescriptor.out))
-        println "\n[${buffer.toString().trim()}]"
-        buffer.reset()
     }
 
     def "should print all items for empty repository"() {
         given:
         ToDoRepository toDoRepository = new InMemoryToDoRepository()
         CommandLineInputHelper helper = new CommandLineInputHelper(scanner: scanner, toDoRepository: toDoRepository)
-        and:
-        def buffer = new ByteArrayOutputStream()
-        System.out = new PrintStream(buffer)
         when:
         helper.printAllToDoItems()
         then:
         buffer.toString().contains "Nothing to do. Go relax!"
-
-        cleanup:
-        System.out = new PrintStream(new FileOutputStream(FileDescriptor.out))
-        println "\n[${buffer.toString().trim()}]"
-        buffer.reset()
     }
 
     /* ************************************************************ */
@@ -190,20 +171,12 @@ class CommandLineInputHelperSpec extends Specification {
         toDoRepository.insert(tdi)
         and:
         scanner.nextLine() >> tdi.id
-        and:
-        def buffer = new ByteArrayOutputStream()
-        System.out = new PrintStream(buffer)
         when:
         helper.deleteToDoItem()
         then:
         buffer.toString().contains "Successfully deleted to do item with ID ${tdi.id}."
         and:
         1 * toDoRepository.delete(tdi)
-
-        cleanup:
-        System.out = new PrintStream(new FileOutputStream(FileDescriptor.out))
-        println "[\n${buffer.toString().trim()}]"
-        buffer.reset()
     }
 
     def "should handle an attempt to delete a non-existing item"() {
@@ -216,19 +189,11 @@ class CommandLineInputHelperSpec extends Specification {
         Long nonExistingId = -tdi.id
         and:
         scanner.nextLine() >> nonExistingId
-        and:
-        def buffer = new ByteArrayOutputStream()
-        System.err = new PrintStream(buffer)
         when:
         helper.deleteToDoItem()
         then:
         buffer.toString().contains "To do item with ID $nonExistingId could not be found."
         and:
         0 * toDoRepository.delete(_ as ToDoItem)
-
-        cleanup:
-        System.err = new PrintStream(new FileOutputStream(FileDescriptor.err))
-        println "\n[${buffer.toString().trim()}]"
-        buffer.reset()
     }
 }

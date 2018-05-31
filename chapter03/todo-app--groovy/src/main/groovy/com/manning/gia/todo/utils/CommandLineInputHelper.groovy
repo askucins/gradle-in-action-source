@@ -62,7 +62,7 @@ class CommandLineInputHelper {
     private ToDoItem askForNewToDoAction() {
         ToDoItem toDoItem = new ToDoItem()
         println "Please enter the name of the item:"
-        toDoItem.setName(readInput())
+        toDoItem.name = readInput()
         return toDoItem
     }
 
@@ -73,7 +73,7 @@ class CommandLineInputHelper {
         ToDoItem toDoItem = findToDoItem()
 
         if (toDoItem != null) {
-            println(toDoItem)
+            println toDoItem
         }
     }
 
@@ -96,11 +96,11 @@ class CommandLineInputHelper {
         if (toDoItem != null) {
             println toDoItem
             println "Please enter the name of the item:"
-            toDoItem.setName(readInput())
+            toDoItem.name = readInput()
             println "Please enter the done status the item:"
-            toDoItem.setCompleted(Boolean.parseBoolean(readInput()))
+            toDoItem.completed = Boolean.parseBoolean(readInput())
             toDoRepository.update(toDoItem)
-            println "Successfully updated to do item with ID " + toDoItem.getId() + "."
+            println "Successfully updated to do item with ID ${toDoItem.id}."
         }
     }
 

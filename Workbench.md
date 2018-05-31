@@ -254,6 +254,7 @@ BUILD SUCCESSFUL in 0s
     ```
     
 * Two words about enum - [Enum values and valueOf](https://programming.guide/java/javadoc-for-enum-values.html)
+
     ```java
     /**
      * Returns an array containing the constants of this enum 
@@ -281,6 +282,7 @@ BUILD SUCCESSFUL in 0s
     public static E valueOf(String name);
     ```
 * Capturing 'println'
+
     Sometimes one needs to capture what is printed on the System.out during tests (ok, **I needed**). 
     That is doable, a baisc solution is presented on this [StackOverflow question](https://stackoverflow.com/questions/3228427/redirect-system-out-println)
     ```java
@@ -298,6 +300,8 @@ BUILD SUCCESSFUL in 0s
     String content = buffer.toString();
     buffer.reset();
     ```
-    
+* Stub vs Mock vs Spy
+
+    See this [StackOverflow discussion](https://stackoverflow.com/questions/24413184/can-someone-explain-the-difference-between-mock-stub-and-spy-in-spock-framewor)    
 
 &#9632;

@@ -150,13 +150,47 @@ class CommandLineInputHelperSpec extends Specification {
     /* UPDATE */
 
     def "should update an existing item"() {
-        expect:
-        false
+        given:
+        ToDoRepository toDoRepository = Spy(InMemoryToDoRepository)
+        CommandLineInputHelper helper = new CommandLineInputHelper(scanner: scanner, toDoRepository: toDoRepository)
+        and:
+        ToDoItem tdi = new ToDoItem(name: 'New TDI')
+        toDoRepository.insert(tdi)
+        String newTdiName = 'Updated TDI'
+        and:
+        scanner.nextLine() >>> [tdi.id, newTdiName, true]
+        when:
+        helper.updateToDoItem()
+        then:
+        buffer.toString().contains "Successfully updated to do item with ID ${tdi.id}."
+        and:
+        1 * toDoRepository.update(tdi)
+        and:
+        with(toDoRepository.findById(tdi.id)) {
+            assert name == newTdiName
+            assert completed
+        }
+
+        cleanup:
+        println "TDI updated: $tdi"
     }
 
     def "should handle an attempt to update a non-existing item"() {
-        expect:
-        false
+        given:
+        ToDoRepository toDoRepository = Spy(InMemoryToDoRepository)
+        CommandLineInputHelper helper = new CommandLineInputHelper(scanner: scanner, toDoRepository: toDoRepository)
+        and:
+        ToDoItem tdi = new ToDoItem(name: 'New TDI')
+        toDoRepository.insert(tdi)
+        Long nonExistingId = -tdi.id
+        and:
+        scanner.nextLine() >> nonExistingId
+        when:
+        helper.updateToDoItem()
+        then:
+        buffer.toString().contains "To do item with ID $nonExistingId could not be found."
+        and:
+        0 * toDoRepository.update(_ as ToDoItem)
     }
 
     /* ************************************************************ */

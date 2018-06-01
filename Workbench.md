@@ -115,6 +115,10 @@ BUILD SUCCESSFUL in 0s
     ```bash
     java -cp build/classes/java/main com.manning.gia.todo.ToDoApp
     ```
+    or (once the built jar file is copied somewhere, e.g. to a current directory)
+    ```bash
+    java -cp todo-app.jar com.manning.gia.todo.ToDoApp
+    ```
 * Easy way to add 'equals' and 'hash' method in groovy
     [EqualsAndHashCode](http://docs.groovy-lang.org/latest/html/api/groovy/transform/EqualsAndHashCode.html)
 * To run a single test method:
@@ -304,4 +308,25 @@ BUILD SUCCESSFUL in 0s
 
     See this [StackOverflow discussion](https://stackoverflow.com/questions/24413184/can-someone-explain-the-difference-between-mock-stub-and-spy-in-spock-framewor)    
 
+#### Further customization
+
+* Changes in the MANIFEST.FM
+    
+    ```java
+    apply plugin: 'java'
+    
+    version = 0.1
+    sourceCompatibility = 1.8
+    
+    jar {
+        manifest {
+            attributes 'Main-Class': 'com.manning.gia.todo.ToDoApp'
+        }
+    }
+    ```
+
+    With that one can run the built app like this:
+    ```bash
+    java -jar ./build/libs/listing_03_04-todo-app-changing-properties-0.1.jar
+    ```
 &#9632;

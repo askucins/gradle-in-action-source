@@ -9,7 +9,7 @@
 
 
 ## Misc
-* Bumped gradle version to 4.6
+* Bumped gradle version to 4.7
 * To run a task in a specific sub-project
     ```bash
     ./gradlew helloWorld -p chapter02/helloworld-task-doLast

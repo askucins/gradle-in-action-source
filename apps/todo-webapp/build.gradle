@@ -14,4 +14,19 @@ dependencies {
             'javax.servlet.jsp:javax.servlet.jsp-api:2.3.2-b02'
     runtime 'javax.servlet.jsp.jstl:jstl:1.2',
             'org.apache.taglibs:taglibs-standard-impl:1.2.5'
+
+    testCompile("org.spockframework:spock-core:1.0-groovy-2.4") {
+        exclude group: "org.codehaus.groovy"
+    }
+    // To support Spock mocks
+    testCompile group: 'cglib', name: 'cglib-nodep', version: '3.2.6'
+    testCompile group: 'org.objenesis', name: 'objenesis', version: '2.6'
+}
+
+/* ******************************************************************************** */
+tasks.withType(Test) {
+    testLogging {
+        events 'passed', 'failed'
+        exceptionFormat 'full'
+    }
 }

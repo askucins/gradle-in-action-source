@@ -329,4 +329,32 @@ BUILD SUCCESSFUL in 0s
     ```bash
     java -jar ./build/libs/listing_03_04-todo-app-changing-properties-0.1.jar
     ```
+    
+#### Groovy project with executable jar
+
+As explained in [this Stackoverflow discussion](https://stackoverflow.com/questions/44793370/how-to-set-up-a-vanilla-groovy-project-with-main-class-executable-via-jar), 
+or [this one](https://stackoverflow.com/questions/9749032/create-a-groovy-executable-jar-with-gradle) 
+there are a couple of approaches, e.g. that 'fatjar' or 'uberjar' based loosely on this idea:
+```
+jar {
+    from files(sourceSets.main.output.classesDirs)
+    //from configurations.runtime.asFileTree.files.grep { it.name =~ /groovy/ }.collect { zipTree(it) }
+    from configurations.runtime.asFileTree.files.collect { zipTree(it) }
+    manifest {
+        attributes(
+                'Main-Class': 'com.manning.gia.todo.ToDoApp',
+        )
+    }
+}    
+```
+Here is e.g. similar approach, although a bit more complex:
+[https://github.com/bmuschko/gradle-tomcat-plugin/blob/master/build.gradle](https://github.com/bmuschko/gradle-tomcat-plugin/blob/master/build.gradle)
+
+Or one can use 'application' plugin (although technically it does not create a jar but a zip file 
+with the compiled app and its dependencies).
+
+But I suppose the most flexible approach is based on the the [shadow](http://imperceptiblethoughts.com/shadow/) plugin 
+(still that fat-jar idea, but neatly wrapped up).
+
+
 &#9632;

@@ -1,4 +1,9 @@
-apply plugin: 'groovy'
+plugins {
+    id 'groovy'
+    id 'application'
+    id 'idea'
+    id 'com.github.johnrengelman.shadow' version '2.0.4'
+}
 
 version = 0.1
 
@@ -16,21 +21,16 @@ dependencies {
     testCompile group: 'org.objenesis', name: 'objenesis', version: '2.6'
 }
 
+/* ******************************************************************************** */
 jar {
     manifest {
-        attributes 'Main-Class': 'com.manning.gia.todo.ToDoApp'
+        attributes(
+                'Main-Class': 'com.manning.gia.todo.ToDoApp'
+        )
     }
 }
 
 /* ******************************************************************************** */
-
-apply plugin: 'application'
-mainClassName = 'com.manning.gia.todo.ToDoApp'
-
-run {
-    standardInput = System.in
-}
-
 // Run application with JavaExec task
 task runWithJavaExec(type: JavaExec) {
     dependsOn classes
@@ -40,7 +40,13 @@ task runWithJavaExec(type: JavaExec) {
 }
 
 /* ******************************************************************************** */
+// plugin application (distribution plus 'run' task)
+mainClassName = 'com.manning.gia.todo.ToDoApp'
+run {
+    standardInput = System.in
+}
 
+/* ******************************************************************************** */
 tasks.withType(Test) {
     testLogging {
         events 'passed', 'failed'

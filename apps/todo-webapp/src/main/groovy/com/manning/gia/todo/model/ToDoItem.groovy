@@ -1,63 +1,43 @@
-package com.manning.gia.todo.model;
+package com.manning.gia.todo.model
 
-public class ToDoItem implements Comparable<ToDoItem> {
-    private Long id;
-    private String name;
-    private boolean completed;
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 
-    public Long getId() {
-        return id;
-    }
+@EqualsAndHashCode
+@ToString(includeNames = true, includePackage = false)
+class ToDoItem implements Comparable<ToDoItem> {
+    Long id
+    String name
+    boolean completed
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public boolean isCompleted() {
-        return completed;
-    }
-
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ToDoItem that = (ToDoItem) o;
-
-        if (completed != that.completed) return false;
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (completed ? 1 : 0);
-        return result;
-    }
-
-    @Override
-    public int compareTo(ToDoItem toDoItem) {
-        return this.getId().compareTo(toDoItem.getId());
-    }
-
-    @Override
-    public String toString() {
-        return id + ": " + name + " [completed: " + completed + "]";
+    int compareTo(ToDoItem tdi) {
+        // Please notice, that 'name' is not used here!
+        // Which makes sense:
+        // - there could be two different items with the same name
+        // - there could be two identical items with the same name
+        //   (which means that this is effectively an identity)
+        return this.id.compareTo(tdi.id)
     }
 }
+
+/*
+An excerpt from "Spock: Up and Running"
+by Rob Fletcher, O'Reilly Media, 2017
+
+What Is == Really Doing?
+Although it’s typical (and usually safe) to consider == an alias for the Java-style
+equals method, that’s something of an oversimplification.
+Even though we can think of
+    assert a == b
+as the Groovy equivalent to the Java
+    assert a.equals(b);
+in fact, if the class of a implements Comparable , Groovy will use:
+    a.compareTo(b) == 0;
+The primary reason this is done is so that the == operator can be reflexive between
+java.lang.String and groovy.lang.GString (the class that backs Groovy’s interpo‐
+lated strings). Because java.lang.String is final , Groovy cannot extend it. Subse‐
+quent versions of Java have introduced the CharSequence class to work around this
+kind of problem in alternative JVM languages, but Groovy’s implementation predates
+this.
+ */

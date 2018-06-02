@@ -1,75 +1,67 @@
-package com.manning.gia.todo.repository;
+package com.manning.gia.todo.repository
 
-import com.manning.gia.todo.model.ToDoItem;
+import com.manning.gia.todo.model.ToDoItem
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.Synchronized
+import groovy.transform.ToString
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentMap
+import java.util.concurrent.atomic.AtomicLong
 
-public class InMemoryToDoRepository implements ToDoRepository {
-    private AtomicLong currentId = new AtomicLong();
-    private ConcurrentMap<Long, ToDoItem> toDos = new ConcurrentHashMap<Long, ToDoItem>();
+/*
+Assumptions:
+- repository may keep only one item of a given id
+- findAll return items sorted by id
+- findById returns an item (on match) or null (no match)
+- insert returns id (on success), or null (if there is already an item with that id in repository)
+- delete doesn't do anything if repository doesn't have that item (not the id - the whole item!)
+- update doesn't do anything if repository doesn't have an item of id like the argument
+ */
+
+@EqualsAndHashCode
+@ToString(includeNames = true, includePackage = false)
+class InMemoryToDoRepository implements ToDoRepository {
+    AtomicLong currentId = new AtomicLong()
+    ConcurrentMap<Long, ToDoItem> tdItems = new ConcurrentHashMap<Long, ToDoItem>()
 
     @Override
-    public List<ToDoItem> findAll() {
-        List<ToDoItem> toDoItems = new ArrayList<ToDoItem>(toDos.values());
-        Collections.sort(toDoItems);
-        return toDoItems;
+    List<ToDoItem> findAll() {
+        tdItems.values().sort() as List<ToDoItem>
     }
 
     @Override
-    public List<ToDoItem> findAllActive() {
-        List<ToDoItem> activeToDos = new ArrayList<ToDoItem>();
-
-        synchronized (toDos) {
-            for (ToDoItem toDoItem : toDos.values()) {
-                if (!toDoItem.isCompleted()) {
-                    activeToDos.add(toDoItem);
-                }
-            }
-        }
-
-        return activeToDos;
+    @Synchronized('tdItems')
+    List<ToDoItem> findAllActive() {
+        tdItems.values().grep { ToDoItem tdi -> !tdi.completed } as List<ToDoItem>
     }
 
     @Override
-    public List<ToDoItem> findAllCompleted() {
-        List<ToDoItem> completedToDos = new ArrayList<ToDoItem>();
-
-        synchronized (toDos) {
-            for (ToDoItem toDoItem : toDos.values()) {
-                if (toDoItem.isCompleted()) {
-                    completedToDos.add(toDoItem);
-                }
-            }
-        }
-
-        return completedToDos;
+    @Synchronized('tdItems')
+    List<ToDoItem> findAllCompleted() {
+        tdItems.values().grep { ToDoItem tdi -> tdi.completed } as List<ToDoItem>
     }
 
     @Override
-    public ToDoItem findById(Long id) {
-        return toDos.get(id);
+    ToDoItem findById(Long id) {
+        tdItems[(id)]
     }
 
     @Override
-    public Long insert(ToDoItem toDoItem) {
-        Long id = currentId.incrementAndGet();
-        toDoItem.setId(id);
-        toDos.putIfAbsent(id, toDoItem);
-        return id;
+    Long insert(ToDoItem tdi) {
+        def id = currentId.incrementAndGet()
+        tdi.id = id
+        tdItems.putIfAbsent(id, tdi)
+        return id
     }
 
     @Override
-    public void update(ToDoItem toDoItem) {
-        toDos.replace(toDoItem.getId(), toDoItem);
+    void update(ToDoItem tdi) {
+        tdItems.replace(tdi.id, tdi)
     }
 
     @Override
-    public void delete(ToDoItem toDoItem) {
-        toDos.remove(toDoItem.getId());
+    void delete(ToDoItem tdi) {
+        tdItems.remove(tdi.id)
     }
 }

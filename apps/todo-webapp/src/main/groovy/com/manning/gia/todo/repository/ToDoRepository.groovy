@@ -1,21 +1,20 @@
-package com.manning.gia.todo.repository;
+package com.manning.gia.todo.repository
 
-import com.manning.gia.todo.model.ToDoItem;
+import com.manning.gia.todo.model.ToDoItem
 
-import java.util.List;
+interface ToDoRepository {
 
-public interface ToDoRepository {
-    List<ToDoItem> findAll();
+    List<ToDoItem> findAll()
 
-    List<ToDoItem> findAllActive();
+    List<ToDoItem> findAllActive()
 
-    List<ToDoItem> findAllCompleted();
+    List<ToDoItem> findAllCompleted()
 
-    ToDoItem findById(Long id);
+    ToDoItem findById(Long id)
 
-    Long insert(ToDoItem toDoItem);
+    Long insert(ToDoItem toDoItem)
 
-    void update(ToDoItem toDoItem);
+    void update(ToDoItem toDoItem)
 
-    void delete(ToDoItem toDoItem);
+    void delete(ToDoItem toDoItem)
 }

@@ -4,6 +4,7 @@ import com.manning.gia.todo.model.ToDoItem
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.Synchronized
 import groovy.transform.ToString
+import groovy.util.logging.Slf4j
 
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
@@ -19,6 +20,7 @@ Assumptions:
 - update doesn't do anything if repository doesn't have an item of id like the argument
  */
 
+@Slf4j
 @EqualsAndHashCode
 @ToString(includeNames = true, includePackage = false)
 class InMemoryToDoRepository implements ToDoRepository {

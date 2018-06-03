@@ -1,9 +1,9 @@
 package com.manning.gia.todo.model
 
-import groovy.transform.EqualsAndHashCode
+import groovy.transform.Canonical
 import groovy.transform.ToString
 
-@EqualsAndHashCode
+@Canonical
 @ToString(includeNames = true, includePackage = false)
 class ToDoItem implements Comparable<ToDoItem> {
     Long id

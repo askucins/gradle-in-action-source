@@ -1,7 +1,7 @@
 package com.manning.gia.todo.repository
 
 import com.manning.gia.todo.model.ToDoItem
-import groovy.transform.EqualsAndHashCode
+import groovy.transform.Canonical
 import groovy.transform.Synchronized
 import groovy.transform.ToString
 import groovy.util.logging.Slf4j
@@ -21,7 +21,7 @@ Assumptions:
  */
 
 @Slf4j
-@EqualsAndHashCode
+@Canonical
 @ToString(includeNames = true, includePackage = false)
 class InMemoryToDoRepository implements ToDoRepository {
     AtomicLong currentId = new AtomicLong()

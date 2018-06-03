@@ -358,34 +358,38 @@ with the compiled app and its dependencies).
 But I suppose the most flexible approach is based on the the [shadow](http://imperceptiblethoughts.com/shadow/) plugin 
 (still that fat-jar idea, but neatly wrapped up).
 
+#### Synchronization
+
+In a nutshell (see [this StackOverflow discussion](https://stackoverflow.com/questions/1085709/what-does-synchronized-mean)):
+> The **synchronized** keyword is all about different threads reading and writing 
+to the same variables, objects and resources. 
+
+> **synchronized** methods enable a simple strategy for preventing thread interference
+ and memory consistency errors: if an object is visible to more than one thread, 
+ all reads or writes to that object's variables are done through synchronized methods. 
+
+> In a very, very small nutshell: When you have two threads that are reading and writing 
+to the same 'resource', say a variable named *foo*, you need to ensure 
+that these threads access the variable in an atomic way. 
+Without the *synchronized* keyword, your thread 1 may not see the change thread 2 
+made to *foo*, or worse, it may only be half changed. 
+This would not be what you logically expect. 
+
+Start with:
+* [https://www.slideshare.net/paulk_asert/groovy-and-concurrency](https://www.slideshare.net/paulk_asert/groovy-and-concurrency)
+
+Then:
+* [https://docs.oracle.com/javase/tutorial/essential/concurrency/procthread.html](https://docs.oracle.com/javase/tutorial/essential/concurrency/procthread.html})
+* [https://stackoverflow.com/questions/1085709/what-does-synchronized-mean](https://stackoverflow.com/questions/1085709/what-does-synchronized-mean)
+* [https://stackoverflow.com/questions/749641/how-does-synchronized-work-in-java](https://stackoverflow.com/questions/749641/how-does-synchronized-work-in-java)
+* [https://stackoverflow.com/questions/39552711/testing-thread-safety-fails-with-spock](https://stackoverflow.com/questions/39552711/testing-thread-safety-fails-with-spock)
+* [http://www.baeldung.com/java-countdown-latch](http://www.baeldung.com/java-countdown-latch)
+* [https://dzone.com/articles/how-synchronization-works-in-java-part-1](https://dzone.com/articles/how-synchronization-works-in-java-part-1)
+* [https://stackoverflow.com/questions/6546193/how-to-catch-an-exception-from-a-thread](https://stackoverflow.com/questions/6546193/how-to-catch-an-exception-from-a-thread)
+
+Also:
+* [https://wiki.sei.cmu.edu/confluence/display/java/SEI+CERT+Oracle+Coding+Standard+for+Java](https://wiki.sei.cmu.edu/confluence/display/java/SEI+CERT+Oracle+Coding+Standard+for+Java)
+
 #### Webapp
-
-* Synchronization
-
-    In a nutshell (see [this StackOverflow discussion](https://stackoverflow.com/questions/1085709/what-does-synchronized-mean)):
-    > The **synchronized** keyword is all about different threads reading and writing 
-    to the same variables, objects and resources. 
-
-    > **synchronized** methods enable a simple strategy for preventing thread interference
-     and memory consistency errors: if an object is visible to more than one thread, 
-     all reads or writes to that object's variables are done through synchronized methods. 
-    
-    > In a very, very small nutshell: When you have two threads that are reading and writing 
-    to the same 'resource', say a variable named *foo*, you need to ensure 
-    that these threads access the variable in an atomic way. 
-    Without the *synchronized* keyword, your thread 1 may not see the change thread 2 
-    made to *foo*, or worse, it may only be half changed. 
-    This would not be what you logically expect. 
-
-    To read:
-    * [https://docs.oracle.com/javase/tutorial/essential/concurrency/procthread.html](https://docs.oracle.com/javase/tutorial/essential/concurrency/procthread.html})
-    * [https://stackoverflow.com/questions/1085709/what-does-synchronized-mean](https://stackoverflow.com/questions/1085709/what-does-synchronized-mean)
-    * [https://stackoverflow.com/questions/749641/how-does-synchronized-work-in-java](https://stackoverflow.com/questions/749641/how-does-synchronized-work-in-java)
-    * [https://stackoverflow.com/questions/39552711/testing-thread-safety-fails-with-spock](https://stackoverflow.com/questions/39552711/testing-thread-safety-fails-with-spock)
-    * [http://www.baeldung.com/java-countdown-latch](http://www.baeldung.com/java-countdown-latch)
-    * [https://dzone.com/articles/how-synchronization-works-in-java-part-1](https://dzone.com/articles/how-synchronization-works-in-java-part-1)
-    * [https://stackoverflow.com/questions/6546193/how-to-catch-an-exception-from-a-thread](https://stackoverflow.com/questions/6546193/how-to-catch-an-exception-from-a-thread)
-    
-* Webapp
 
 &#9632;

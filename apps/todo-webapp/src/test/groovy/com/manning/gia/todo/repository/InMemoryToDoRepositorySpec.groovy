@@ -226,6 +226,34 @@ class InMemoryToDoRepositorySpec extends Specification {
         foundItems.collect { [it.id, it.name] } == [[tdi.id, tdi.name]]
     }
 
+    def "should findAllActive return only active items"() {
+        given:
+        ToDoItem tdiActive = new ToDoItem(name: 'Active', completed:false)
+        ToDoItem tdiCompleted = new ToDoItem(name: 'Completed', completed:true)
+        repo.insert(tdiActive)
+        repo.insert(tdiCompleted)
+        when:
+        List<ToDoItem> foundItems = repo.findAllActive()
+        then:
+        foundItems.size() == 1
+        and:
+        foundItems.first().equals(tdiActive)
+    }
+
+    def "should findAllComplete return only completed items"() {
+        given:
+        ToDoItem tdiActive = new ToDoItem(name: 'Active', completed:false)
+        ToDoItem tdiCompleted = new ToDoItem(name: 'Completed', completed:true)
+        repo.insert(tdiActive)
+        repo.insert(tdiCompleted)
+        when:
+        List<ToDoItem> foundItems = repo.findAllCompleted()
+        then:
+        foundItems.size() == 1
+        and:
+        foundItems.first().equals(tdiCompleted)
+    }
+
     def "should update an item in the repository"() {
         given:
         ToDoItem tdi = new ToDoItem(name: 'test')

@@ -171,7 +171,6 @@ class InMemoryToDoRepositorySpec extends Specification {
     }
 
     def "should findAll return nothing if repository is empty"() {
-        given:
         when:
         List<ToDoItem> foundItems = repo.findAll()
         then:

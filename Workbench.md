@@ -392,4 +392,21 @@ Also:
 
 #### Webapp
 
+## Links to read or review
+- http://groovy-lang.org/style-guide.html
+- https://docs.gradle.org/4.6/dsl/
+- https://docs.gradle.org/current/userguide/java_plugin.html
+- https://stackoverflow.com/questions/16047306/how-is-docker-different-from-a-normal-virtual-machine
+- https://stackoverflow.com/questions/29096967/what-are-the-differences-between-a-vm-image-and-a-docker-image?noredirect=1&lq=1
+- https://www.slideshare.net/paulk_asert/groovy-and-concurrency
+- https://codeblog.jonskeet.uk/category/java/
+- https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker?view=sql-server-linux-2017
+- http://jonskeet.uk/java/index.html
+- https://github.com/spockframework/spock/issues/106
+- https://www.mscharhag.com/java/understanding-junits-runner-architecture
+- http://mrhaki.blogspot.com/
+- https://martinfowler.com/articles/mocksArentStubs.html#TheDifferenceBetweenMocksAndStubs
+
+
+
 &#9632;

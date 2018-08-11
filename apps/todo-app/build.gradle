@@ -12,8 +12,8 @@ repositories {
 }
 
 dependencies {
-    compile "org.codehaus.groovy:groovy-all:2.5.0"
-    testCompile("org.spockframework:spock-core:1.0-groovy-2.4") {
+    compile "org.codehaus.groovy:groovy-all:2.5.1"
+    testCompile("org.spockframework:spock-core:1.1-groovy-2.4") {
         exclude group: "org.codehaus.groovy"
     }
     // To support Spock mocks

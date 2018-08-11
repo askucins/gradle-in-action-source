@@ -5,33 +5,33 @@ import static com.manning.gia.todo.utils.CommandLineInput.*
 
 class CommandLineInputHandlerSpec extends Specification {
 
-    CommandLineInputHandler clih
-    CommandLineInputHelper helper
+    CommandLineInputHandler cliHandler
+    CommandLineInputHelper cliHelper
 
     def setup() {
-        helper = Mock(CommandLineInputHelper)
-        clih = new CommandLineInputHandler(helper: helper)
+        cliHelper = Mock(CommandLineInputHelper)
+        cliHandler = new CommandLineInputHandler(helper: cliHelper)
     }
 
     def "should printOptions be delegated to the helper class"() {
         when:
-        clih.printOptions()
+        cliHandler.printOptions()
         then:
-        1 * helper.printOptions()
+        1 * cliHelper.printOptions()
     }
 
     def "should readOptions be delegated to the helper class"() {
         when:
-        clih.readInput()
+        cliHandler.readInput()
         then:
-        1 * helper.readInput()
+        1 * cliHelper.readInput()
     }
 
     def "should not 'exit' be delegated"() {
         when:
-        clih.processInput(EXIT)
+        cliHandler.processInput(EXIT)
         then:
-        0 * helper._
+        0 * cliHelper._
     }
 
     def "should processInput raise exception handler when called with a non-match argument"() {
@@ -39,51 +39,51 @@ class CommandLineInputHandlerSpec extends Specification {
         CommandLineInput CliNonMatch = GroovyMock(CommandLineInput)
         assert getCommandLineInputForInput(CliNonMatch.shortCmd) == null
         when: "processInput is called with a not-handled enum value"
-        clih.processInput(CliNonMatch)
+        cliHandler.processInput(CliNonMatch)
         then: "exception is raised and handled "
-        1 * helper.handleUnknownInput()
+        1 * cliHelper.handleUnknownInput()
     }
 
     def "should processInput raise exception handler when called with a null"() {
         when: "processInput is called with null"
-        clih.processInput(null)
+        cliHandler.processInput(null)
         then: "exception is raised and handled "
-        1 * helper.handleUnknownInput()
+        1 * cliHelper.handleUnknownInput()
     }
 
     def "should processInput request printing all items when called with FIND_ALL"() {
         when:
-        clih.processInput(FIND_ALL)
+        cliHandler.processInput(FIND_ALL)
         then:
-        1 * helper.printAllToDoItems()
+        1 * cliHelper.printAllToDoItems()
     }
 
     def "should processInput request printing a given item when called with FIND_BY_ID"() {
         when:
-        clih.processInput(FIND_BY_ID)
+        cliHandler.processInput(FIND_BY_ID)
         then:
-        1 * helper.printToDoItem()
+        1 * cliHelper.printToDoItem()
     }
 
     def "should processInput request inserting a given item when called with INSERT"() {
         when:
-        clih.processInput(INSERT)
+        cliHandler.processInput(INSERT)
         then:
-        1 * helper.insertToDoItem()
+        1 * cliHelper.insertToDoItem()
     }
 
     def "should processInput request updating a given item when called with UPDATE"() {
         when:
-        clih.processInput(UPDATE)
+        cliHandler.processInput(UPDATE)
         then:
-        1 * helper.updateToDoItem()
+        1 * cliHelper.updateToDoItem()
     }
 
     def "should processInput request deleting a given item when called with DELETE"() {
         when:
-        clih.processInput(DELETE)
+        cliHandler.processInput(DELETE)
         then:
-        1 * helper.deleteToDoItem()
+        1 * cliHelper.deleteToDoItem()
     }
 
 

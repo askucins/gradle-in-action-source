@@ -1,6 +1,7 @@
 package com.manning.gia.todo.repository
 
 import com.manning.gia.todo.model.ToDoItem
+import org.codehaus.groovy.runtime.InvokerHelper
 import spock.lang.Specification
 import spock.lang.Unroll
 import spock.lang.Issue
@@ -171,7 +172,6 @@ class InMemoryToDoRepositorySpec extends Specification {
     }
 
     def "should findAll return nothing if repository is empty"() {
-        given:
         when:
         List<ToDoItem> foundItems = repo.findAll()
         then:
@@ -241,21 +241,22 @@ class InMemoryToDoRepositorySpec extends Specification {
         tdiFound.name == tdi.name
     }
 
-    @Ignore
-    @Issue("Update should be applied only after a call is made - there is a bug here!!")
     def "should update an item in the repository only after calling an update"() {
         given:
         ToDoItem tdi = new ToDoItem(name: 'test')
         Long inserted = repo.insert(tdi)
         assert tdi.id == inserted
+        and:
+        ToDoItem localCopy = new ToDoItem(id: tdi.id, name:tdi.name, completed: tdi.completed)
+        assert tdi.id == localCopy.id
         when:
-        tdi.name = 'updated'
-        then: "local changes are not propagated to the repository" //TODO This seems to be a bug!!
-        repo.findById(tdi.id).name != tdi.name
+        localCopy.name = 'updated'
+        then: "local changes are not propagated to the repository"
+        repo.findById(tdi.id).name != localCopy.name
         when:
-        repo.update(tdi)
+        repo.update(localCopy)
         then: "until repo is updated"
-        repo.findById(tdi.id).name == tdi.name
+        repo.findById(tdi.id).name == localCopy.name
     }
 
     def "should update do nothing if an item is not in repository"() {

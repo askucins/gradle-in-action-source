@@ -15,6 +15,7 @@ enum CommandLineInput {
     }
 
     // To have a reverse search (char -> enum)
+    // This is a map: a key is a character representing an enum value
     static INPUTS = values().collectEntries { value -> [(value.shortCmd): value] }
 
     // A wrapper to that reverse search:

@@ -32,3 +32,8 @@ tasks.withType(Test) {
         exceptionFormat 'full'
     }
 }
+
+/* ******************************************************************************** */
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.9'
+}
